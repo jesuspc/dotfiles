@@ -1,10 +1,7 @@
 {
-	"font_size": 11,
 	"ignored_packages":
 	[
-		"HTML5",
-		"Markdown",
-		"RSpec"
+		"Vintage"
 	],
 	"rulers":
 	[

@@ -1,0 +1,25 @@
+### Aliases ###
+
+## Aliases: Tool shortcurts
+alias s='subl'
+alias d='docker'
+DockerContainerBash(){
+  docker run -v ~/Code:/home/developer/Code -i -t $1 /bin/bash
+}
+alias dr=DockerContainerBash
+# Git
+alias gco='git checkout'
+alias gl='git pull origin'
+alias gp='git push origin'
+alias amend='git add . && git add -u && git commit --amend'
+
+## Aliases: Unix commands
+alias paux='ps aux | grep'
+
+## Aliases: Ruby-related
+# Gems
+alias be='bundle exec'
+# Rails
+alias r='rails'
+alias rs='rails server'
+alias rc='rails console'
