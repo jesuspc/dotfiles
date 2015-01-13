@@ -1,8 +1,11 @@
+## Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
+
 ### PATH changes ###
 ## Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
-## Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
+## Rbenv
+# export PATH="$HOME/.rbenv/bin:$PATH"
 ## User PATHS
 export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 export PATH=$HOME/bin:$PATH
