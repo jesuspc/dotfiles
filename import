@@ -1,0 +1,34 @@
+#!/bin/bash
+set -x
+# Constants
+DOTFILES=( $HOME'/.vimrc' $HOME'/.zshrc' $HOME'/.aliases' )
+CP_OPTS="-i"
+FILES=
+
+# Option parsing
+while [ "$1" != "" ]; do
+  case $1 in
+    --file)         shift
+                    FILES=$1
+                    ;;
+     -y)            shift
+                    CP_OPTS=""
+                    ;;
+     -f | --force)  shift
+                    CP_OPTS="-f"
+                    ;;
+  esac
+  shift
+done
+
+# Overwrite dotfiles to be imported
+if [ -n "$FILES" ]; then
+  DOTFILES=(${FILES// / })
+fi
+
+for i in "${DOTFILES[@]}"
+do
+  cp $CP_OPTS $i $(dirname $0)
+done
+
+exit 0

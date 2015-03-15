@@ -1,13 +1,10 @@
-## Path to your oh-my-zsh installation.
-export ZSH=$HOME/.oh-my-zsh
-
 ### PATH changes ###
 ## Added by the Heroku Toolbelt
 export PATH="/usr/local/heroku/bin:$PATH"
-## Rbenv
-# export PATH="$HOME/.rbenv/bin:$PATH"
+## Path to your oh-my-zsh installation.
+export ZSH=$HOME/.oh-my-zsh
 ## User PATHS
-export PATH="/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 export PATH=$HOME/bin:$PATH
 
 # Set name of the theme to load.
@@ -54,7 +51,7 @@ ZSH_THEME="robbyrussell"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git docker bundler prietoj)
 
 # User configuration
 # export MANPATH="/usr/local/man:$MANPATH"
@@ -97,4 +94,4 @@ source $HOME/.aliases
 
 ### Initializers
 ## Rbenv
-# eval "$(rbenv init -)"
+eval "$(rbenv init -)"
