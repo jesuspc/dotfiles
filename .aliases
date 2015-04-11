@@ -1,7 +1,8 @@
 ### Aliases ###
 
-## Aliases: Tool shortcurts
+## Tool shortcurts
 alias s='subl'
+alias tvim="tmux new 'vim'"
 alias d='docker'
 DockerContainerBash(){
   docker run -v ~/Code:/home/developer/Code -i -t $1 /bin/zsh
@@ -13,10 +14,10 @@ alias gl='git pull origin'
 alias gp='git push origin'
 alias amend='git add . && git add -u && git commit --amend'
 
-## Aliases: Unix commands
+## Unix commands
 alias paux='ps aux | grep'
 
-## Aliases: Ruby-related
+##  Ruby-related
 # Gems
 alias be='bundle exec'
 # Rails

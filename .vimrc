@@ -1,5 +1,4 @@
 set nocompatible
-filetype off
 
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
@@ -11,6 +10,7 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-repeat'
 Plugin 'jwhitley/vim-matchit'
 Plugin 'kana/vim-textobj-user'
+Plugin 'tpope/vim-dispatch'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -33,6 +33,9 @@ Plugin 'altercation/vim-colors-solarized'
 " == Source Control ==
 Plugin 'tpope/vim-fugitive'
 
+" == Syntax ==
+Plugin 'scrooloose/syntastic'
+
 " ---- Language Related ----
 
 " == Ruby ==
@@ -51,7 +54,7 @@ Plugin 'tpope/vim-rails'
 
 " == Elixir ==
 Plugin 'elixir-lang/vim-elixir'
-
+Plugin 'mattreduce/vim-mix'
 
 " All of your Plugins must be added before the following line
 call vundle#end()
@@ -59,10 +62,11 @@ call vundle#end()
 " ========== Basics ==========
 let mapleader = ','
 
+filetype off
 filetype plugin indent on
 
 " Enable syntax highlight
-syntax enable
+syntax on
 
 " Display line number
 set relativenumber
@@ -90,6 +94,9 @@ autocmd BufRead,BufWrite * if ! &bin | silent! %s/\s\+$//ge | endif
 set nobackup
 set noswapfile
 
+" Column line
+set colorcolumn=81
+
 " Open .vimrc
 nmap <leader>v :e ~/.vimrc<CR>
 
@@ -116,10 +123,10 @@ set splitbelow
 set splitright
 
 " Move between splits
-nnoremap <C-j> <C-W>j
-nnoremap <C-k> <C-W>k
-nnoremap <C-l> <C-W>l
-nnoremap <C-h> <C-W>h
+nnoremap <down> <C-W>j
+nnoremap <up> <C-W>k
+nnoremap <right> <C-W>l
+nnoremap <left> <C-W>h
 
 " Resizing splits
 nnoremap <silent> + :vertical resize +5<CR>
@@ -136,7 +143,7 @@ let g:NERDTreeAutoDeleteBuffer = 1
 let NERDTreeIgnore = [ '\.o$', '\.meta$' ]
 
 " Open NERDTree when vim starts
-autocmd vimenter * NERDTree
+autocmd vimenter * if argc() == 0 | NERDTree | endif
 
 nnoremap <leader>n :NERDTreeToggle<CR>
 
@@ -144,6 +151,13 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 " Use better separators
 let g:airline_left_sep = '▶'
 let g:airline_right_sep = '◀'
+
+" =========== RSpec.vim ==========
+let g:rspec_command = "Dispatch bundle exec rspec {spec}"
+map <Leader>t :call RunCurrentSpecFile()<CR>
+map <Leader>s :call RunNearestSpec()<CR>
+map <Leader>l :call RunLastSpec()<CR>
+map <Leader>a :call RunAllSpecs()<CR>
 
 " ========== Visualization  ==========
 set background=dark
