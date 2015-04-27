@@ -25,7 +25,7 @@ Plugin 'tpope/vim-surround'
 Plugin 'godlygeek/tabular'
 Plugin 'tpope/vim-endwise'
 Plugin 'tomtom/tcomment_vim'
-Plugin 'ervandew/supertab'
+Plugin 'Valloric/YouCompleteMe'
 
 " == Visuals ==
 Plugin 'altercation/vim-colors-solarized'
@@ -65,8 +65,14 @@ let mapleader = ','
 filetype off
 filetype plugin indent on
 
+" Enable mouse scrolling on tmux
+set mouse=a
+
 " Enable syntax highlight
 syntax on
+
+" Wrapping for long lines
+set nowrap
 
 " Display line number
 set relativenumber
@@ -123,10 +129,10 @@ set splitbelow
 set splitright
 
 " Move between splits
-nnoremap <down> <C-W>j
-nnoremap <up> <C-W>k
-nnoremap <right> <C-W>l
-nnoremap <left> <C-W>h
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
 
 " Resizing splits
 nnoremap <silent> + :vertical resize +5<CR>
