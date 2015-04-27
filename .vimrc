@@ -36,6 +36,9 @@ Plugin 'tpope/vim-fugitive'
 " == Syntax ==
 Plugin 'scrooloose/syntastic'
 
+" == Testing ==
+Plugin 'janko-m/vim-test'
+
 " ---- Language Related ----
 
 " == Ruby ==
@@ -45,9 +48,6 @@ runtime macros/matchit.vim
 if has("autocmd")
   filetype indent plugin on
 endif
-
-" = Rspec =
-Plugin 'thoughtbot/vim-rspec'
 
 " = Rails =
 Plugin 'tpope/vim-rails'
@@ -158,12 +158,13 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 let g:airline_left_sep = '▶'
 let g:airline_right_sep = '◀'
 
-" =========== RSpec.vim ==========
-let g:rspec_command = "Dispatch bundle exec rspec {spec}"
-map <Leader>t :call RunCurrentSpecFile()<CR>
-map <Leader>s :call RunNearestSpec()<CR>
-map <Leader>l :call RunLastSpec()<CR>
-map <Leader>a :call RunAllSpecs()<CR>
+" =========== Vim Test ===========
+let test#strategy = "dispatch"
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
 
 " ========== Visualization  ==========
 set background=dark
