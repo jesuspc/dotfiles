@@ -2,7 +2,10 @@
 
 ## Tool shortcurts
 alias s='subl'
-alias tvim="tmux new 'vim'"
+Tvim(){
+  tmux new "vim $1"
+}
+alias tvim=Tvim
 alias d='docker'
 DockerContainerBash(){
   docker run -v ~/Code:/home/developer/Code -i -t $1 /bin/zsh
@@ -11,6 +14,7 @@ alias dr=DockerContainerBash
 # Git
 alias gco='git checkout'
 alias gl='git pull origin'
+alias glr='git pull --rebase origin'
 alias gp='git push origin'
 alias amend='git add . && git add -u && git commit --amend'
 

@@ -29,6 +29,7 @@ Plugin 'godlygeek/tabular'
 Plugin 'tpope/vim-endwise'
 Plugin 'tomtom/tcomment_vim'
 Plugin 'Valloric/YouCompleteMe'
+Plugin 'SirVer/ultisnips'
 
 " == Visuals ==
 Plugin 'altercation/vim-colors-solarized'
@@ -51,6 +52,7 @@ runtime macros/matchit.vim
 if has("autocmd")
   filetype indent plugin on
 endif
+Plugin 'tpope/vim-bundler'
 
 " = Rails =
 Plugin 'tpope/vim-rails'
@@ -160,6 +162,11 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 " Use better separators
 let g:airline_left_sep = '▶'
 let g:airline_right_sep = '◀'
+
+" =========== UltiSnips ==========
+let g:UltiSnipsExpandTrigger="<c-o>"
+let g:UltiSnipsJumpForwardTrigger="<c-b>"
+let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " =========== Vim Test ===========
 let test#strategy = "dispatch"
