@@ -1,0 +1,13 @@
+[core]
+	excludesfile = /Users/prietoj/.gitignore_global
+[filter "media"]
+	clean = git media clean %f
+	smudge = git media smudge %f
+	required = true
+[user]
+	name = Jesus Prieto Colomina
+	email = chus1818@gmail.com
+[init]
+	templatedir = ~/.git_template
+[alias]
+	ctags = !.git/hooks/ctags

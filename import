@@ -1,7 +1,8 @@
 #!/bin/bash
 
 # Constants
-DOTFILES=( $HOME'/.vimrc' $HOME'/.zshrc' $HOME'/.aliases' $HOME'/.tmux.conf' )
+DOTFILES=( $HOME'/.vimrc' $HOME'/.zshrc' $HOME'/.aliases' $HOME'/.tmux.conf' $HOME'/.gitconfig' )
+DIRS=( $HOME'/.git_template' )
 CP_OPTS="-i"
 FILES=
 
@@ -30,5 +31,11 @@ for i in "${DOTFILES[@]}"
 do
   cp $CP_OPTS $i $(dirname $0)
 done
+
+for i in "${DIRS[@]}"
+do
+  cp -r $i $(dirname $0)
+done
+
 
 exit 0

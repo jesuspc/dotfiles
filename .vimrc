@@ -36,6 +36,7 @@ Plugin 'altercation/vim-colors-solarized'
 
 " == Source Control ==
 Plugin 'tpope/vim-fugitive'
+Plugin 'airblade/vim-gitgutter'
 
 " == Syntax ==
 Plugin 'scrooloose/syntastic'
