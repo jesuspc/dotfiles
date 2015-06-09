@@ -10,7 +10,9 @@ Plugin 'gmarik/Vundle.vim'
 Plugin 'tpope/vim-repeat'
 Plugin 'jwhitley/vim-matchit'
 Plugin 'kana/vim-textobj-user'
+Plugin 'tommcdo/vim-exchange'
 Plugin 'tpope/vim-dispatch'
+Plugin 'jpalardy/vim-slime'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -70,9 +72,6 @@ let mapleader = ','
 
 filetype off
 filetype plugin indent on
-
-" Enable mouse scrolling on tmux
-set mouse=a
 
 " Enable syntax highlight
 syntax on
@@ -177,9 +176,42 @@ nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>
 
+" =========== Vim slime ===========
+let g:slime_target = "tmux"
+let g:slime_default_config = {"socket_name": "default", "target_pane": ".1"}
+
 " ========== Visualization  ==========
 set background=dark
 let g:solarized_visibility = "high"
 let g:solarized_contrast = "high"
 let g:solarized_termcolors = 256
 colorscheme solarized
+
+" ========= Scrolling ===========
+
+function SmoothScroll(up)
+  if a:up
+    let scrollaction="^Y"
+  else
+    let scrollaction="^E"
+  endif
+  exec "normal " . scrollaction
+  redraw
+  let counter=1
+  while counter<&scroll
+    let counter+=1
+    sleep 10m
+    redraw
+    exec "normal " . scrollaction
+  endwhile
+endfunction
+
+nnoremap <C-U> :call SmoothScroll(1)<Enter>
+nnoremap <C-D> :call SmoothScroll(0)<Enter>
+inoremap <C-U> <Esc>:call SmoothScroll(1)<Enter>i
+inoremap <C-D> <Esc>:call SmoothScroll(0)<Enter>i
+
+map <ScrollWheelUp> <C-Y>
+map <ScrollWheelDown> <C-E>
+
+set mouse=a
