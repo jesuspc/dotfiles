@@ -13,6 +13,7 @@ Plugin 'kana/vim-textobj-user'
 Plugin 'tommcdo/vim-exchange'
 Plugin 'tpope/vim-dispatch'
 Plugin 'jpalardy/vim-slime'
+Plugin 'Lokaltog/vim-easymotion'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -29,7 +30,7 @@ Plugin 'terryma/vim-multiple-cursors'
 Plugin 'tpope/vim-surround'
 Plugin 'godlygeek/tabular'
 Plugin 'tpope/vim-endwise'
-Plugin 'tomtom/tcomment_vim'
+Plugin 'scrooloose/nerdcommenter'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'SirVer/ultisnips'
 
@@ -80,7 +81,8 @@ syntax on
 set nowrap
 
 " Display line number
-set relativenumber
+" set relativenumber
+set number
 
 " Show matching brackets
 set showmatch
@@ -179,6 +181,13 @@ nmap <silent> <leader>g :TestVisit<CR>
 " =========== Vim slime ===========
 let g:slime_target = "tmux"
 let g:slime_default_config = {"socket_name": "default", "target_pane": ".1"}
+
+" ========== Easy Motion ===========
+let g:EasyMotion_do_mapping = 0
+nmap s <Plug>(easymotion-s2)
+map <Leader>j <Plug>(easymotion-j)
+map <Leader>k <Plug>(easymotion-k)
+map  / <Plug>(easymotion-sn)
 
 " ========== Visualization  ==========
 set background=dark
