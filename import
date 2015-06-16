@@ -2,7 +2,7 @@
 
 # Constants
 DOTFILES=( $HOME'/.vimrc' $HOME'/.zshrc' $HOME'/.aliases' $HOME'/.tmux.conf' $HOME'/.gitconfig' )
-DIRS=( $HOME'/.git_template' )
+DIRS=( $HOME'/.git_template' $HOME'/.bin' )
 CP_OPTS="-i"
 FILES=
 

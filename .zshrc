@@ -7,6 +7,9 @@ export ZSH=$HOME/.oh-my-zsh
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 export PATH=$HOME/bin:$PATH
 
+### Global vars ###
+export EDITOR='vim'
+
 # Set name of the theme to load.
 # Look in ~/.oh-my-zsh/themes/
 # Optionally, if you set this to "random", it'll load a random theme each
@@ -95,3 +98,6 @@ source $HOME/.aliases
 ### Initializers
 ## Rbenv
 eval "$(rbenv init -)"
+
+### Tmuxinator (will require the tmuxinator gem)
+source ~/.bin/tmuxinator.zsh

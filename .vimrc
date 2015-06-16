@@ -12,7 +12,7 @@ Plugin 'jwhitley/vim-matchit'
 Plugin 'kana/vim-textobj-user'
 Plugin 'tommcdo/vim-exchange'
 Plugin 'tpope/vim-dispatch'
-Plugin 'jpalardy/vim-slime'
+Plugin 'benmills/vimux'
 Plugin 'Lokaltog/vim-easymotion'
 
 " == Interface ==
@@ -84,6 +84,11 @@ set nowrap
 " set relativenumber
 set number
 
+" Clipboard integration
+set clipboard=unnamed
+" Go into pastemode temporarly on keypress
+set pastetoggle=<F2>
+
 " Show matching brackets
 set showmatch
 
@@ -111,7 +116,7 @@ set noswapfile
 set colorcolumn=81
 
 " Open .vimrc
-nmap <leader>v :e ~/.vimrc<CR>
+nmap <leader>, :e ~/.vimrc<CR>
 
 " ============ Persistent undo ============
 
@@ -151,6 +156,7 @@ nnoremap <silent> <leader>- :resize -5<CR>
 
 " Don't ask to remove buffers when renaming or deleting files
 let g:NERDTreeAutoDeleteBuffer = 1
+let g:NERDTreeMouseMode = 3
 
 " Ignore *.o files
 let NERDTreeIgnore = [ '\.o$', '\.meta$' ]
@@ -178,9 +184,35 @@ nmap <silent> <leader>a :TestSuite<CR>
 nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>
 
-" =========== Vim slime ===========
-let g:slime_target = "tmux"
-let g:slime_default_config = {"socket_name": "default", "target_pane": ".1"}
+" =========== Vimux ============
+" Prompt for a command to run
+map <Leader>vp :VimuxPromptCommand<CR>
+
+" Run last command executed by VimuxRunCommand
+map <Leader>vl :VimuxRunLastCommand<CR>
+
+" Inspect runner pane
+map <Leader>vi :VimuxInspectRunner<CR>
+
+" Close vim tmux runner opened by VimuxRunCommand
+map <Leader>vq :VimuxCloseRunner<CR>
+
+" Interrupt any command running in the runner pane
+map <Leader>vx :VimuxInterruptRunner<CR>
+
+" Zoom the runner pane (use <bind-key> z to restore runner pane)
+map <Leader>vz :call VimuxZoomRunner()<CR>
+
+function! VimuxSlime()
+  call VimuxSendText(@v)
+  call VimuxSendKeys("Enter")
+endfunction
+
+" if text is selected, save it in the v buffer and send that buffer it to tmux
+vmap <Leader>vs "vy :call VimuxSlime()<cr>
+
+" select current paragraph and send it to tmux
+nmap <Leader>vs vip<Leader>vs<cr>
 
 " ========== Easy Motion ===========
 let g:EasyMotion_do_mapping = 0
