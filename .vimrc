@@ -1,5 +1,13 @@
 set nocompatible
 
+if has('nvim')
+  runtime! plugin/python_setup.vim
+  let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+  " Hack to get C-h working in neovim
+  nmap <BS> <C-W>h
+  tnoremap <Esc> <C-\><C-n>
+endif
+
 set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
@@ -14,6 +22,9 @@ Plugin 'tommcdo/vim-exchange'
 Plugin 'tpope/vim-dispatch'
 Plugin 'benmills/vimux'
 Plugin 'Lokaltog/vim-easymotion'
+Plugin 'tmhedberg/matchit'
+Plugin 'sickill/vim-pasta'
+Plugin 'szw/vim-ctrlspace'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -221,6 +232,9 @@ map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map  / <Plug>(easymotion-sn)
 
+" ========== Syntastic ===========
+let g:syntastic_ruby_checkers = ['mri', 'rubocop']
+
 " ========== Visualization  ==========
 set background=dark
 let g:solarized_visibility = "high"
@@ -256,3 +270,19 @@ map <ScrollWheelUp> <C-Y>
 map <ScrollWheelDown> <C-E>
 
 set mouse=a
+
+" Zoom / Restore window.
+function! s:ZoomToggle() abort
+  if exists('t:zoomed') && t:zoomed
+    exec t:zoom_winrestcmd
+    let t:zoomed = 0
+  else
+    let t:zoom_winrestcmd = winrestcmd()
+    resize
+    vertical resize
+    let t:zoomed = 1
+  endif
+endfunction
+command! ZoomToggle call s:ZoomToggle()
+nnoremap <silent> <M-z> :ZoomToggle<CR>
+nnoremap <silent> <M-m> :ZoomToggle<CR>
