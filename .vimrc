@@ -34,7 +34,7 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'kien/ctrlp.vim'
 
 " == Search ==
-Plugin 'mileszs/ack.vim'
+Plugin 'rking/ag.vim'
 
 " == File Edition ==
 Plugin 'terryma/vim-multiple-cursors'
