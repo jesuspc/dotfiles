@@ -47,6 +47,7 @@ Plugin 'SirVer/ultisnips'
 
 " == Visuals ==
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'chriskempson/base16-vim'
 
 " == Source Control ==
 Plugin 'tpope/vim-fugitive'
@@ -128,6 +129,9 @@ set colorcolumn=81
 
 " Open .vimrc
 nmap <leader>, :e ~/.vimrc<CR>
+
+" Clear search highlight
+nnoremap <silent><ESC> :nohlsearch<CR><ESC>
 
 " ============ Persistent undo ============
 
@@ -230,7 +234,7 @@ let g:EasyMotion_do_mapping = 0
 nmap s <Plug>(easymotion-s2)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
-map  / <Plug>(easymotion-sn)
+map <leader>/ <Plug>(easymotion-sn)
 
 " ========== Syntastic ===========
 let g:syntastic_ruby_checkers = ['mri', 'rubocop']
@@ -240,7 +244,9 @@ set background=dark
 let g:solarized_visibility = "high"
 let g:solarized_contrast = "high"
 let g:solarized_termcolors = 256
-colorscheme solarized
+let base16colorspace=256
+"colorscheme solarized
+colorscheme base16-default
 
 " ========= Scrolling ===========
 
