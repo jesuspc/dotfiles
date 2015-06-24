@@ -25,6 +25,7 @@ Plugin 'Lokaltog/vim-easymotion'
 Plugin 'tmhedberg/matchit'
 Plugin 'sickill/vim-pasta'
 Plugin 'szw/vim-ctrlspace'
+Plugin 'justinmk/vim-sneak'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -128,7 +129,7 @@ set noswapfile
 set colorcolumn=81
 
 " Open .vimrc
-nmap <leader>, :e ~/.vimrc<CR>
+nmap <leader>m :e ~/.vimrc<CR>
 
 " Clear search highlight
 nnoremap <silent><ESC> :nohlsearch<CR><ESC>
@@ -231,7 +232,6 @@ nmap <Leader>vs vip<Leader>vs<cr>
 
 " ========== Easy Motion ===========
 let g:EasyMotion_do_mapping = 0
-nmap s <Plug>(easymotion-s2)
 map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map <leader>/ <Plug>(easymotion-sn)
