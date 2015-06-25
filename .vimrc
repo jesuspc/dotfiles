@@ -135,6 +135,9 @@ augroup reload_vimrc " {
   autocmd BufWritePost $MYVIMRC source $MYVIMRC
 augroup END " }
 
+" Search before <CR>
+set incsearch
+
 " Clear search highlight
 nnoremap <silent><ESC> :nohlsearch<CR><ESC>
 
