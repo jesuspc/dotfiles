@@ -26,6 +26,8 @@ Plugin 'tmhedberg/matchit'
 Plugin 'sickill/vim-pasta'
 Plugin 'szw/vim-ctrlspace'
 Plugin 'justinmk/vim-sneak'
+Plugin 'ConradIrwin/vim-bracketed-paste'
+Plugin 'kassio/neoterm'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -186,6 +188,7 @@ nnoremap <leader>n :NERDTreeToggle<CR>
 " Use better separators
 let g:airline_left_sep = '▶'
 let g:airline_right_sep = '◀'
+let g:airline_exclude_preview = 1
 
 " =========== UltiSnips ==========
 let g:UltiSnipsExpandTrigger="<c-o>"
@@ -193,7 +196,8 @@ let g:UltiSnipsJumpForwardTrigger="<c-b>"
 let g:UltiSnipsJumpBackwardTrigger="<c-z>"
 
 " =========== Vim Test ===========
-let test#strategy = "dispatch"
+let test#strategy = "neoterm"
+nnoremap <silent> <leader>c :call neoterm#close_all()<cr>
 nmap <silent> <leader>t :TestNearest<CR>
 nmap <silent> <leader>T :TestFile<CR>
 nmap <silent> <leader>a :TestSuite<CR>
