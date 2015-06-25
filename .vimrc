@@ -28,6 +28,7 @@ Plugin 'szw/vim-ctrlspace'
 Plugin 'justinmk/vim-sneak'
 Plugin 'ConradIrwin/vim-bracketed-paste'
 Plugin 'kassio/neoterm'
+Plugin 'benekastah/neomake'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -55,9 +56,6 @@ Plugin 'chriskempson/base16-vim'
 " == Source Control ==
 Plugin 'tpope/vim-fugitive'
 Plugin 'airblade/vim-gitgutter'
-
-" == Syntax ==
-Plugin 'scrooloose/syntastic'
 
 " == Testing ==
 Plugin 'janko-m/vim-test'
@@ -132,6 +130,10 @@ set colorcolumn=81
 
 " Open .vimrc
 nmap <leader>m :e ~/.vimrc<CR>
+augroup reload_vimrc " {
+  autocmd!
+  autocmd BufWritePost $MYVIMRC source $MYVIMRC
+augroup END " }
 
 " Clear search highlight
 nnoremap <silent><ESC> :nohlsearch<CR><ESC>
@@ -240,8 +242,10 @@ map <Leader>j <Plug>(easymotion-j)
 map <Leader>k <Plug>(easymotion-k)
 map <leader>/ <Plug>(easymotion-sn)
 
-" ========== Syntastic ===========
-let g:syntastic_ruby_checkers = ['mri', 'rubocop']
+" ========== NeoMake ==========
+let g:neomake_elixir_enabled_makers = ['elixir']
+let g:neomake_ruby_enabled_makers = ['mri', 'rubocop']
+autocmd! BufWritePost * Neomake
 
 " ========== Visualization  ==========
 set background=dark
