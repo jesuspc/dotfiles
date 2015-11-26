@@ -1,4 +1,5 @@
 set nocompatible
+set hidden
 
 if has('nvim')
   runtime! plugin/python_setup.vim
@@ -29,6 +30,10 @@ Plugin 'justinmk/vim-sneak'
 Plugin 'ConradIrwin/vim-bracketed-paste'
 Plugin 'kassio/neoterm'
 Plugin 'benekastah/neomake'
+Plugin 'terryma/vim-expand-region'
+Plugin 'majutsushi/tagbar'
+Plugin 'tpope/vim-projectionist'
+Plugin 'gcmt/wildfire.vim'
 
 " == Interface ==
 Plugin 'bling/vim-airline'
@@ -62,7 +67,7 @@ Plugin 'janko-m/vim-test'
 
 " ---- Language Related ----
 
-" == Ruby ==
+" ====== Ruby ======
 Plugin 'vim-ruby/vim-ruby'
 Plugin 'nelstrom/vim-textobj-rubyblock'
 runtime macros/matchit.vim
@@ -74,7 +79,13 @@ Plugin 'tpope/vim-bundler'
 " = Rails =
 Plugin 'tpope/vim-rails'
 
-" == Elixir ==
+" ====== Javascript ======
+Plugin 'pangloss/vim-javascript'
+
+" == Node ==
+Plugin 'moll/vim-node'
+
+" ====== Elixir ======
 Plugin 'elixir-lang/vim-elixir'
 Plugin 'mattreduce/vim-mix'
 
@@ -93,9 +104,17 @@ syntax on
 " Wrapping for long lines
 set nowrap
 
+" Wrapped lines goes down/up to next row
+noremap j gj
+noremap k gk
+
 " Display line number
 " set relativenumber
 set number
+
+set cursorline
+
+set wildmenu
 
 " Clipboard integration
 set clipboard=unnamed
@@ -130,7 +149,7 @@ set colorcolumn=81
 
 " Open .vimrc
 nmap <leader>m :e ~/.vimrc<CR>
-augroup reload_vimrc " {
+augroup reload_vimrc " {o8
   autocmd!
   autocmd BufWritePost $MYVIMRC source $MYVIMRC
 augroup END " }
@@ -140,6 +159,21 @@ set incsearch
 
 " Clear search highlight
 nnoremap <silent><ESC> :nohlsearch<CR><ESC>
+
+nnoremap Y y$
+
+" Visual shifting
+vnoremap < <gv
+vnoremap > >gv
+
+" Allow using the repeat operator with a visual selection
+vnoremap . :normal .<CR>
+
+" Find merge conflict markers
+map <leader>fc /\v^[<\|=>]{7}( .*\|$)<CR>
+
+" Adjust viewports to the same size
+map <Leader>= <C-w>=<Paste>
 
 " ============ Persistent undo ============
 
@@ -175,6 +209,15 @@ nnoremap <silent> - :vertical resize -5<CR>
 nnoremap <silent> <leader>+ :resize +5<CR>
 nnoremap <silent> <leader>- :resize -5<CR>
 
+" =========== Go to file =============
+set suffixesadd+=.js
+
+" =========== Git =========
+
+" Spell checking and automatic wrapping at the recommended 72 columns to
+" commit messages
+autocmd Filetype gitcommit setlocal spell textwidth=72
+
 " =========== NERDtree ===========
 
 " Don't ask to remove buffers when renaming or deleting files
@@ -196,9 +239,22 @@ let g:airline_right_sep = '◀'
 let g:airline_exclude_preview = 1
 
 " =========== UltiSnips ==========
-let g:UltiSnipsExpandTrigger="<c-o>"
-let g:UltiSnipsJumpForwardTrigger="<c-b>"
-let g:UltiSnipsJumpBackwardTrigger="<c-z>"
+let g:UltiSnipsExpandTrigger = "<nop>"
+" Fixes incompatibility with vim endwise when expanding snippet with CR
+inoremap <silent> <CR> <C-r>=<SID>ExpandSnippetOrReturnEmptyString()<CR>
+function! s:ExpandSnippetOrReturnEmptyString()
+    if pumvisible()
+    let snippet = UltiSnips#ExpandSnippetOrJump()
+    if g:ulti_expand_or_jump_res > 0
+        return snippet
+    else
+        return "\<C-y>\<CR>"
+    endif
+    else
+        return "\<CR>"
+endfunction
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " =========== Vim Test ===========
 let test#strategy = "neoterm"
@@ -246,9 +302,60 @@ map <Leader>k <Plug>(easymotion-k)
 map <leader>/ <Plug>(easymotion-sn)
 
 " ========== NeoMake ==========
-let g:neomake_elixir_enabled_makers = ['elixir']
 let g:neomake_ruby_enabled_makers = ['mri', 'rubocop']
+let g:neomake_javascript_enabled_makers = ['jshint']
+let g:neomake_elixir_enabled_makers = ['elixir']
 autocmd! BufWritePost * Neomake
+
+" ========== CtrlP ============
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\.git$\|\.hg$\|\.svn$',
+  \ 'file': '\.exe$\|\.so$\|\.dll$\|\.pyc$' }
+let s:ctrlp_fallback = 'ag %s --nocolor -l -g ""'
+if exists("g:ctrlp_user_command")
+  unlet g:ctrlp_user_command
+endif
+let g:ctrlp_user_command = {
+  \ 'types': {
+      \ 1: ['.git', 'cd %s && git ls-files . --cached --exclude-standard --others'],
+      \ 2: ['.hg', 'hg --cwd %s locate -I .'],
+  \ },
+  \ 'fallback': s:ctrlp_fallback
+\ }
+
+" ========== Vim Projectionist ==========
+
+" ========== Tagbar ==========
+nnoremap <silent> <leader>tt :TagbarToggle<CR>
+
+let g:tagbar_type_ruby = {
+    \ 'kinds' : [
+        \ 'm:modules',
+        \ 'c:classes',
+        \ 'd:describes',
+        \ 'C:contexts',
+        \ 'f:methods',
+        \ 'F:singleton methods'
+    \ ]
+  \ }
+
+let g:tagbar_type_elixir = {
+    \ 'ctagstype' : 'elixir',
+    \ 'kinds' : [
+        \ 'f:functions',
+        \ 'functions:functions',
+        \ 'c:callbacks',
+        \ 'd:delegates',
+        \ 'e:exceptions',
+        \ 'i:implementations',
+        \ 'a:macros',
+        \ 'o:operators',
+        \ 'm:modules',
+        \ 'p:protocols',
+        \ 'r:records'
+    \ ]
+   \ }
 
 " ========== Visualization  ==========
 set background=dark
@@ -303,3 +410,74 @@ endfunction
 command! ZoomToggle call s:ZoomToggle()
 nnoremap <silent> <M-z> :ZoomToggle<CR>
 nnoremap <silent> <M-m> :ZoomToggle<CR>
+
+" Bg change
+function! ToggleBG()
+    let s:tbg = &background
+    " Inversion
+    if s:tbg == "dark"
+        set background=light
+        colorscheme solarized
+    else
+        set background=dark
+        colorscheme base16-default
+    endif
+endfunction
+noremap <leader>bg :call ToggleBG()<CR>
+
+" Restore cursor position after swapping buffer
+function! ResCur()
+    if line("'\"") <= line("$")
+        silent! normal! g`"
+        return 1
+    endif
+endfunction
+
+augroup resCur
+    autocmd!
+    autocmd BufWinEnter * call ResCur()
+augroup END
+
+" slow multiple_cursors &amp; YCM
+function! Multiple_cursors_before()
+    let g:ycm_auto_trigger = 0
+endfunction
+
+function! Multiple_cursors_after()
+    let g:ycm_auto_trigger = 1
+endfunction
+
+" End/Start of line motion keys act relative to row/wrap width in the
+" presence of `:set wrap`, and relative to line for `:set nowrap`.
+" Default vim behaviour is to act relative to text line in both cases
+function! WrapRelativeMotion(key, ...)
+    let vis_sel=""
+    if a:0
+        let vis_sel="gv"
+    endif
+    if &wrap
+        execute "normal!" vis_sel . "g" . a:key
+    else
+        execute "normal!" vis_sel . a:key
+    endif
+endfunction
+
+" Map g* keys in Normal, Operator-pending, and Visual+select
+noremap $ :call WrapRelativeMotion("$")<CR>
+noremap <End> :call WrapRelativeMotion("$")<CR>
+noremap 0 :call WrapRelativeMotion("0")<CR>
+noremap <Home> :call WrapRelativeMotion("0")<CR>
+noremap ^ :call WrapRelativeMotion("^")<CR>
+
+" Overwrite the operator pending $/<End> mappings from above
+" to force inclusive motion with :execute normal!
+onoremap $ v:call WrapRelativeMotion("$")<CR>
+onoremap <End> v:call WrapRelativeMotion("$")<CR>
+
+" Overwrite the Visual+select mode mappings from above
+" to ensure the correct vis_sel flag is passed to function
+vnoremap $ :<C-U>call WrapRelativeMotion("$", 1)<CR>
+vnoremap <End> :<C-U>call WrapRelativeMotion("$", 1)<CR>
+vnoremap 0 :<C-U>call WrapRelativeMotion("0", 1)<CR>
+vnoremap <Home> :<C-U>call WrapRelativeMotion("0", 1)<CR>
+vnoremap ^ :<C-U>call WrapRelativeMotion("^", 1)<CR>

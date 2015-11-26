@@ -6,6 +6,7 @@ export ZSH=$HOME/.oh-my-zsh
 ## User PATHS
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 export PATH=$HOME/bin:$PATH
+export PATH="$HOME/Library/Haskell/bin:$PATH"
 
 ### Global vars ###
 export EDITOR='vim'
@@ -105,3 +106,6 @@ source ~/.bin/tmuxinator.zsh
 ### Base16 Shell ###
 BASE16_SHELL="$HOME/.config/base16-shell/base16-monokai.dark.sh"
 [[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
+
+### Docker Machin ###
+eval "$(docker-machine env default)"

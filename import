@@ -2,7 +2,7 @@
 
 # Constants
 DOTFILES=( $HOME'/.vimrc' $HOME'/.zshrc' $HOME'/.aliases' $HOME'/.tmux.conf' $HOME'/.gitconfig' )
-DIRS=( $HOME'/.git_template' $HOME'/.bin' )
+DIRS=( $HOME'/.git_template' $HOME'/.bin' $HOME'/.vim/UltiSnips' )
 CP_OPTS="-i"
 FILES=
 

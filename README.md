@@ -1,6 +1,12 @@
-## Vim
+### Vim
 
-Better used inside tmux in order to run test via dispatch without leaving the editor screen.
+Via Neovim. Once extracted link neovim config to vim config by running:
+
+```bash
+mkdir -p ${XDG_CONFIG_HOME:=$HOME/.config}
+ln -s ~/.vim $XDG_CONFIG_HOME/nvim
+ln -s ~/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
+```
 
 ### External Dependencies
 

@@ -14,7 +14,7 @@ alias s='subl'
 Tvim(){
   tmux new "vim $1"
 }
-alias vim='nvim'
+alias vim=nvim
 alias tvim=Tvim
 alias d='docker'
 DockerContainerBash(){
