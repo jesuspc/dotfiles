@@ -95,6 +95,8 @@ call vundle#end()
 " ========== Basics ==========
 let mapleader = ','
 
+inoremap jj <ESC>
+
 filetype off
 filetype plugin indent on
 
