@@ -8,6 +8,8 @@ ln -s ~/.vim $XDG_CONFIG_HOME/nvim
 ln -s ~/.vimrc $XDG_CONFIG_HOME/nvim/init.vim
 ```
 
+Follow the installation instructions for [vim-instant-markdown](https://github.com/suan/vim-instant-markdown)
+
 ### External Dependencies
 
 * [Zsh](https://github.com/robbyrussell/oh-my-zsh)
