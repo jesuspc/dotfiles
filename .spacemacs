@@ -124,7 +124,7 @@ values."
    dotspacemacs-colorize-cursor-according-to-state t
    ;; Default font. `powerline-scale' allows to quickly tweak the mode-line
    ;; size to make separators look not too crappy.
-   dotspacemacs-default-font '("Monaco"
+   dotspacemacs-default-font '("Source Code Pro"
                                :size 13
                                :weight normal
                                :width normal
@@ -270,6 +270,12 @@ explicitly specified that a variable should be set before a package is loaded,
 you should place your code here."
 
   (global-linum-mode)
+
+  (add-hook 'before-save-hook 'delete-trailing-whitespace)
+
+  ;; 80 lines marker
+  (define-globalized-minor-mode global-fci-mode fci-mode (lambda () (fci-mode 1)))
+  (global-fci-mode 1)
 
   ;; Disables right alt bindings (needed in order to use hash and at symbols)
   (setq ns-right-alternate-modifier (quote none))
