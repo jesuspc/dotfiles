@@ -4,6 +4,8 @@
 
 [Macport with smooth scrolling](https://github.com/railwaycat/homebrew-emacsmacport)
 
+## Commands
+
 ### Folder navigation
 
 Open dired -> SPC a d
@@ -36,8 +38,8 @@ Open spacemacs file in buffer -> SPC f e d
 
 Open shell -> SPC a s i
 
-## Language specific
+### Language specific
 
-### Ruby
+#### Ruby
 
 Run test under cursor -> SPC m t t
