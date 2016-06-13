@@ -43,3 +43,5 @@ Open shell -> SPC a s i
 #### Ruby
 
 Run test under cursor -> SPC m t t
+
+Go to definition -> SPC m g g
