@@ -44,4 +44,6 @@ Open shell -> SPC a s i
 
 Run test under cursor -> SPC m t t
 
+Rerun last test -> SPC m t r
+
 Go to definition -> SPC m g g
