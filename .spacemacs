@@ -24,7 +24,8 @@ values."
      ;; Uncomment some layer names and press <SPC f e R> (Vim style) or
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
-     (auto-completion (haskell :variables haskell-completion-backend 'intero))
+     ;; (auto-completion (haskell :variables haskell-completion-backend 'intero))
+     auto-completion
      spacemacs-layout
      better-defaults
      emacs-lisp
@@ -41,9 +42,10 @@ values."
      syntax-checking
      version-control
      (haskell :variables
-              haskell-enable-ghc-mod-support t
+              haskell-enable-ghc-mod-support nil
               ;; haskell-enable-ghci-ng-support t
               haskell-process-type 'stack-ghci
+              haskell-completion-backend 'intero
               haskell-process-args-stack-ghci '("--ghc-options=-ferror-spans" "--with-ghc=intero")
               hindent-style  "johan-tibell"
               haskell-stylish-on-save t
@@ -54,13 +56,14 @@ values."
      html
      javascript
      nlinum
+     evil-mc
      (osx :variables osx-use-option-as-meta nil)
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(intero company-ghci)
+   dotspacemacs-additional-packages '(company-ghci scroll-restore)
    ;; A list of packages and/or extensions that will not be install and loaded.
    dotspacemacs-excluded-packages '(linum-mode smooth-scrolling spaceline)
    ;; If non-nil spacemacs will delete any orphan packages, i.e. packages that
@@ -275,15 +278,29 @@ you should place your code here."
   ;; (global-linum-mode)
   ;;(global-linum-mode)
 
+  ;; Enable multiple cursors
+  (global-evil-mc-mode 1)
+
+  ;; Scroll-restore
+  (require 'scroll-restore)
+  (scroll-restore-mode 1)
+  ;; Allow scroll-restore to modify the cursor face
+  (setq scroll-restore-handle-cursor t)
+  ;; Make the cursor invisible while POINT is off-screen
+  (setq scroll-restore-cursor-type nil)
+  ;; Jump back to the original cursor position after scrolling
+  (setq scroll-restore-jump-back t)
+
   ;; HASKELL
   (add-hook 'haskell-mode-hook (lambda ()
                                  (message "haskell-mode-hook")
-                                 (intero-mode)
-                                 (push '(company-ghci :with company-yasnippet :with company-dabbrev) company-backends-haskell-mode)
-                                 (interactive-haskell-mode)
+;;                                 (intero-mode)
+;;                                 (push '(company-ghci :with company-yasnippet :with company-dabbrev) company-backends-haskell-mode)
+;;                                 (interactive-haskell-mode)
                                  (turn-on-haskell-indentation)
                                  (hindent-mode)
                                  (setq haskell-stylish-on-save t) ;; override haskell layer
+                                 (flycheck-add-next-checker 'intero '(warning . haskell-hlint))
                                  ))
 
   ;; (global-nlinum-mode)
@@ -298,9 +315,9 @@ you should place your code here."
   ;; Disables right alt bindings (needed in order to use hash and at symbols)
   (setq ns-right-alternate-modifier (quote none))
 
-  ;;(setq scroll-conservatively 101) ;; move minimum when cursor exits view, instead of recentering
-  ;;(setq mouse-wheel-scroll-amount '(1)) ;; mouse scroll moves 1 line at a time, instead of 5 lines
-  ;;(setq mouse-wheel-progressive-speed nil) ;; on a long mouse scroll keep scrolling by 1 line
+  (setq scroll-conservatively 101) ;; move minimum when cursor exits view, instead of recentering
+  (setq mouse-wheel-scroll-amount '(1 ((shift) . 1) ((control) . nil))) ;; mouse scroll moves 1 line at a time, instead of 5 lines
+  (setq mouse-wheel-progressive-speed nil) ;; on a long mouse scroll keep scrolling by 1 line
 
   )
 
@@ -313,7 +330,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (hlint-refactor helm-hoogle uuidgen osx-dictionary org-projectile org-download nlinum-relative nlinum mwim livid-mode skewer-mode simple-httpd link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode request xterm-color window-numbering web-mode toc-org shm ruby-test-mode rspec-mode projectile-rails rake f persp-mode page-break-lines orgit org-pomodoro alert org-plus-contrib neotree multi-term markdown-toc markdown-mode magit-gitflow leuven-theme less-css-mode json-mode js-doc intero info+ hl-todo hindent highlight-numbers helm-swoop helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag google-translate gitconfig-mode git-messenger feature-mode expand-region exec-path-from-shell evil-mc evil-matchit evil-magit magit magit-popup evil-exchange eshell-prompt-extras diff-hl company-tern dash-functional tern company-quickhelp coffee-mode bundler buffer-move auto-yasnippet auto-compile ace-link auto-complete avy elixir-mode ghc anzu iedit smartparens highlight haskell-mode flycheck git-gutter git-commit with-editor company helm popup helm-core async yasnippet multiple-cursors js2-mode hydra inf-ruby dash s quelpa package-build use-package which-key evil spacemacs-theme ws-butler web-beautify volatile-highlights vi-tilde-fringe undo-tree tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-end rubocop robe reveal-in-osx-finder restart-emacs rbenv rainbow-delimiters popwin pcre2el pbcopy parent-mode paradox packed osx-trash org-repo-todo org-present org-bullets open-junk-file move-text mmm-mode macrostep lorem-ipsum log4e linum-relative launchctl json-snatcher json-reformat js2-refactor jade-mode inflections indent-guide ido-vertical-mode hungry-delete htmlize highlight-parentheses highlight-indentation help-fns+ helm-themes helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company haskell-snippets goto-chg golden-ratio gnuplot gntp gitattributes-mode git-timemachine git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-iedit-state evil-escape evil-args evil-anzu eval-sexp-fu esh-help engine-mode emmet-mode elisp-slime-nav diminish define-word company-web company-statistics company-ghci company-ghc company-cabal cmm-mode clean-aindent-mode chruby bracketed-paste bind-key auto-highlight-symbol alchemist aggressive-indent adaptive-wrap ace-window ace-jump-helm-line ac-ispell))))
+    (scroll-restore hlint-refactor helm-hoogle uuidgen osx-dictionary org-projectile org-download nlinum-relative nlinum mwim livid-mode skewer-mode simple-httpd link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode request xterm-color window-numbering web-mode toc-org shm ruby-test-mode rspec-mode projectile-rails rake f persp-mode page-break-lines orgit org-pomodoro alert org-plus-contrib neotree multi-term markdown-toc markdown-mode magit-gitflow leuven-theme less-css-mode json-mode js-doc intero info+ hl-todo hindent highlight-numbers helm-swoop helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag google-translate gitconfig-mode git-messenger feature-mode expand-region exec-path-from-shell evil-mc evil-matchit evil-magit magit magit-popup evil-exchange eshell-prompt-extras diff-hl company-tern dash-functional tern company-quickhelp coffee-mode bundler buffer-move auto-yasnippet auto-compile ace-link auto-complete avy elixir-mode ghc anzu iedit smartparens highlight haskell-mode flycheck git-gutter git-commit with-editor company helm popup helm-core async yasnippet multiple-cursors js2-mode hydra inf-ruby dash s quelpa package-build use-package which-key evil spacemacs-theme ws-butler web-beautify volatile-highlights vi-tilde-fringe undo-tree tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-end rubocop robe reveal-in-osx-finder restart-emacs rbenv rainbow-delimiters popwin pcre2el pbcopy parent-mode paradox packed osx-trash org-repo-todo org-present org-bullets open-junk-file move-text mmm-mode macrostep lorem-ipsum log4e linum-relative launchctl json-snatcher json-reformat js2-refactor jade-mode inflections indent-guide ido-vertical-mode hungry-delete htmlize highlight-parentheses highlight-indentation help-fns+ helm-themes helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company haskell-snippets goto-chg golden-ratio gnuplot gntp gitattributes-mode git-timemachine git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-iedit-state evil-escape evil-args evil-anzu eval-sexp-fu esh-help engine-mode emmet-mode elisp-slime-nav diminish define-word company-web company-statistics company-ghci company-ghc company-cabal cmm-mode clean-aindent-mode chruby bracketed-paste bind-key auto-highlight-symbol alchemist aggressive-indent adaptive-wrap ace-window ace-jump-helm-line ac-ispell))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
