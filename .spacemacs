@@ -264,7 +264,9 @@ executes.
  This function is mostly useful for variables that need to be set
 before packages are loaded. If you are unsure, you should try in setting them in
 `dotspacemacs/user-config' first."
-  (setq-default evil-search-module 'evil-search)
+  (setq-default evil-search-module 'evil-search
+                js2-basic-offset 2
+                js-indent-level 2)
   )
 
 (defun dotspacemacs/user-config ()
