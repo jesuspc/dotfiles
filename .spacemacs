@@ -347,6 +347,12 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (global-set-key [s-up] 'windmove-up)
   (global-set-key [s-down] 'windmove-down)
 
+<<<<<<< ac2f810dcb695b6a23f8657ca22a80edbbd760e9
+=======
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(javascript-eslint)))
+>>>>>>> JS flycheck disable
   )
 
 (custom-set-variables
