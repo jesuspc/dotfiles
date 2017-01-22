@@ -8,6 +8,7 @@
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
    '(
+     erc
      octave
      slack
      yaml
@@ -77,7 +78,7 @@
                          leuven
                          zenburn)
    dotspacemacs-colorize-cursor-according-to-state nil
-   dotspacemacs-default-font '("Source Code Pro"
+   dotspacemacs-default-font '("Fira Code";;"Hasklig";;"Source Code Pro"
                                :size 12
                                :weight normal
                                :width normal
@@ -157,6 +158,7 @@
   )
 
 (defun dotspacemacs/user-config ()
+
   ;; Org-Capture
   (setq org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
@@ -203,6 +205,18 @@
   (setq ns-function-modifier 'hyper)
 
   ;; Haskell
+  (setq haskell-font-lock-symbols t)
+  ;; (setq company-ghc-show-info t)
+
+  ;;(add-to-list 'company-backends 'company-ghc)
+
+  ;; Structured haskell
+  (add-to-list 'load-path "~/Code/haskell/structured-haskell-mode/elisp")
+  (require 'shm)
+  (set-face-background 'shm-current-face "#525252")
+  (define-key shm-map (kbd "M-s") 'shm/goto-parent-end)
+  (define-key shm-map (kbd "C-k") 'shm/delete-indentation)
+
   (add-hook 'haskell-mode-hook (lambda ()
                                  (message "haskell-mode-hook")
                                  (turn-on-haskell-indentation)
@@ -210,6 +224,7 @@
                                  (setq haskell-stylish-on-save t)
                                  (flycheck-add-next-checker 'intero '(warning . haskell-hlint))
                                  ))
+  ;; (add-hook 'haskell-mode-hook 'structured-haskell-mode)
 
   ;; Org-mode
   (org-babel-do-load-languages
@@ -246,12 +261,14 @@
   (require 'highlight-indent-guides)
   (setq highlight-indent-guides-method 'character)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
+  (add-hook 'prog-mode-hook 'centered-cursor-mode)
+  (add-hook 'text-mode-hook 'centered-cursor-mode)
 
   ;; Custom key bindings
   (define-key evil-insert-state-map (kbd "C-a") 'evil-first-non-blank)
   (define-key evil-insert-state-map (kbd "C-e") 'evil-last-non-blank)
   (define-key evil-normal-state-map (kbd "H-SPC") 'set-rectangular-region-anchor)
-  (define-key evil-normal-state-map (kbd "SPC SPC") 'evil-avy-goto-char-2)
+  (define-key evil-normal-state-map (kbd "SPC SPC") 'evil-avy-goto-char)
 
   ;; Disable smartparens highlighting
   ;(with-eval-after-load 'smartparens
@@ -364,7 +381,7 @@
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(package-selected-packages
    (quote
-    (spinner bind-map highlight-indent-guides wand ob-elixir minitest hide-comnt org erlang litable restclient ob-http yaml-mode smooth-scroll pug-mode slack emojify circe oauth2 websocket dockerfile-mode docker tablist docker-tramp fasd grizzl spotify helm-spotify multi magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache stickyfunc-enhance srefactor ibuffer-projectile flyspell-correct-helm flyspell-correct auto-dictionary zenburn-theme solarized-theme ranger fcitx pangu-spacing find-by-pinyin-dired chinese-pyim chinese-pyim-basedict ace-pinyin pinyinlib ace-jump-mode pandoc-mode ox-pandoc ht scroll-restore hlint-refactor helm-hoogle uuidgen osx-dictionary org-projectile org-download nlinum-relative nlinum mwim livid-mode skewer-mode simple-httpd link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode request xterm-color window-numbering web-mode toc-org shm ruby-test-mode rspec-mode projectile-rails rake f persp-mode page-break-lines orgit org-pomodoro alert org-plus-contrib neotree multi-term markdown-toc markdown-mode magit-gitflow leuven-theme less-css-mode json-mode js-doc intero info+ hl-todo hindent highlight-numbers helm-swoop helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag google-translate gitconfig-mode git-messenger feature-mode expand-region exec-path-from-shell evil-mc evil-matchit evil-magit magit magit-popup evil-exchange eshell-prompt-extras diff-hl company-tern dash-functional tern company-quickhelp coffee-mode bundler buffer-move auto-yasnippet auto-compile ace-link auto-complete avy elixir-mode ghc anzu iedit smartparens highlight haskell-mode flycheck git-gutter git-commit with-editor company helm popup helm-core async yasnippet multiple-cursors js2-mode hydra inf-ruby dash s quelpa package-build use-package which-key evil spacemacs-theme ws-butler web-beautify volatile-highlights vi-tilde-fringe undo-tree tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-end rubocop robe reveal-in-osx-finder restart-emacs rbenv rainbow-delimiters popwin pcre2el pbcopy parent-mode paradox packed osx-trash org-repo-todo org-present org-bullets open-junk-file move-text mmm-mode macrostep lorem-ipsum log4e linum-relative launchctl json-snatcher json-reformat js2-refactor jade-mode inflections indent-guide ido-vertical-mode hungry-delete htmlize highlight-parentheses highlight-indentation help-fns+ helm-themes helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company haskell-snippets goto-chg golden-ratio gnuplot gntp gitattributes-mode git-timemachine git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-iedit-state evil-escape evil-args evil-anzu eval-sexp-fu esh-help engine-mode emmet-mode elisp-slime-nav diminish define-word company-web company-statistics company-ghci company-ghc company-cabal cmm-mode clean-aindent-mode chruby bracketed-paste bind-key auto-highlight-symbol alchemist aggressive-indent adaptive-wrap ace-window ace-jump-helm-line ac-ispell)))
+    (erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks spinner bind-map highlight-indent-guides wand ob-elixir minitest hide-comnt org erlang litable restclient ob-http yaml-mode smooth-scroll pug-mode slack emojify circe oauth2 websocket dockerfile-mode docker tablist docker-tramp fasd grizzl spotify helm-spotify multi magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache stickyfunc-enhance srefactor ibuffer-projectile flyspell-correct-helm flyspell-correct auto-dictionary zenburn-theme solarized-theme ranger fcitx pangu-spacing find-by-pinyin-dired chinese-pyim chinese-pyim-basedict ace-pinyin pinyinlib ace-jump-mode pandoc-mode ox-pandoc ht scroll-restore hlint-refactor helm-hoogle uuidgen osx-dictionary org-projectile org-download nlinum-relative nlinum mwim livid-mode skewer-mode simple-httpd link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode request xterm-color window-numbering web-mode toc-org shm ruby-test-mode rspec-mode projectile-rails rake f persp-mode page-break-lines orgit org-pomodoro alert org-plus-contrib neotree multi-term markdown-toc markdown-mode magit-gitflow leuven-theme less-css-mode json-mode js-doc intero info+ hl-todo hindent highlight-numbers helm-swoop helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag google-translate gitconfig-mode git-messenger feature-mode expand-region exec-path-from-shell evil-mc evil-matchit evil-magit magit magit-popup evil-exchange eshell-prompt-extras diff-hl company-tern dash-functional tern company-quickhelp coffee-mode bundler buffer-move auto-yasnippet auto-compile ace-link auto-complete avy elixir-mode ghc anzu iedit smartparens highlight haskell-mode flycheck git-gutter git-commit with-editor company helm popup helm-core async yasnippet multiple-cursors js2-mode hydra inf-ruby dash s quelpa package-build use-package which-key evil spacemacs-theme ws-butler web-beautify volatile-highlights vi-tilde-fringe undo-tree tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-end rubocop robe reveal-in-osx-finder restart-emacs rbenv rainbow-delimiters popwin pcre2el pbcopy parent-mode paradox packed osx-trash org-repo-todo org-present org-bullets open-junk-file move-text mmm-mode macrostep lorem-ipsum log4e linum-relative launchctl json-snatcher json-reformat js2-refactor jade-mode inflections indent-guide ido-vertical-mode hungry-delete htmlize highlight-parentheses highlight-indentation help-fns+ helm-themes helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company haskell-snippets goto-chg golden-ratio gnuplot gntp gitattributes-mode git-timemachine git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-iedit-state evil-escape evil-args evil-anzu eval-sexp-fu esh-help engine-mode emmet-mode elisp-slime-nav diminish define-word company-web company-statistics company-ghci company-ghc company-cabal cmm-mode clean-aindent-mode chruby bracketed-paste bind-key auto-highlight-symbol alchemist aggressive-indent adaptive-wrap ace-window ace-jump-helm-line ac-ispell)))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
