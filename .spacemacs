@@ -193,15 +193,6 @@
                 (append flycheck-disabled-checkers
                         '(ruby-rubocop)))
 
-  ;; Scroll-restore
-  (require 'scroll-restore)
-  (scroll-restore-mode 1)
-  ;; Allow scroll-restore to modify the cursor face
-  ;; (setq scroll-restore-handle-cursor t)
-  ;; Make the cursor invisible while POINT is off-screen
-  (setq scroll-restore-cursor-type nil)
-  (setq scroll-restore-jump-back t)
-
   (setq ns-function-modifier 'hyper)
 
   ;; Haskell
@@ -265,6 +256,10 @@
   (add-hook 'text-mode-hook 'centered-cursor-mode)
 
   ;; Custom key bindings
+  (define-key evil-normal-state-map (kbd "<escape>") '(lambda ()
+                                                        (interactive)
+                                                        (spacemacs/evil-search-clear-highlight)
+                                                        (evil-mc-undo-all-cursors)))
   (define-key evil-insert-state-map (kbd "C-a") 'evil-first-non-blank)
   (define-key evil-insert-state-map (kbd "C-e") 'evil-last-non-blank)
   (define-key evil-normal-state-map (kbd "H-SPC") 'set-rectangular-region-anchor)
