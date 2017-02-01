@@ -288,8 +288,11 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   ;(with-eval-after-load 'smartparens
   ;  (show-smartparens-global-mode -1))
 
-  (global-set-key (kbd "M-+") 'text-scale-increase)
-  (global-set-key (kbd "M--") 'text-scale-decrease)
+  (global-set-key (kbd "s-p") 'helm-projectile-find-file)
+  (global-set-key (kbd "s-m") 'magit-status)
+  (global-set-key (kbd "s-f") 'spacemacs/helm-find-files)
+  (global-set-key (kbd "s-+") 'text-scale-increase)
+  (global-set-key (kbd "s--") 'text-scale-decrease)
   ;; Horizontal scrolling
   (global-set-key (kbd "<wheel-right>") '(lambda ()
                                            (interactive)
