@@ -87,12 +87,6 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-### Constants ###
-## Docker-related
-export DOCKER_HOST=tcp://192.168.59.103:2376
-export DOCKER_CERT_PATH=$HOME/.boot2docker/certs/boot2docker-vm
-export DOCKER_TLS_VERIFY=1
-
 ### Aliases
 source $HOME/.aliases
 
@@ -100,12 +94,6 @@ source $HOME/.aliases
 ## Rbenv
 eval "$(rbenv init -)"
 
-### Tmuxinator (will require the tmuxinator gem)
-source ~/.bin/tmuxinator.zsh
-
 ### Base16 Shell ###
-BASE16_SHELL="$HOME/.config/base16-shell/base16-monokai.dark.sh"
-[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
-
-### Docker Machin ###
-eval "$(docker-machine env default)"
+#BASE16_SHELL="$HOME/.config/base16-shell/base16-monokai.dark.sh"
+#[[ -s $BASE16_SHELL ]] && source $BASE16_SHELL
