@@ -11,6 +11,7 @@ Ts(){
 }
 alias ts=Ts
 alias s='subl'
+alias emacs='tmux attach-session -t emacs || tmux new -d -s emacs "emacs"\; attach'
 Tvim(){
   tmux new "vim $1"
 }
