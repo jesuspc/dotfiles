@@ -158,6 +158,7 @@
   )
 
 (defun dotspacemacs/user-config ()
+  (setq projectile-file-exists-remote-cache-expire nil)
 
   ;; Org-Capture
   (setq org-capture-templates
