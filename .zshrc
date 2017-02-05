@@ -4,7 +4,7 @@ export PATH="/usr/local/heroku/bin:$PATH"
 ## Path to your oh-my-zsh installation.
 export ZSH=$HOME/.oh-my-zsh
 ## User PATHS
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
 export PATH=$HOME/bin:$PATH
 export PATH="$HOME/Library/Haskell/bin:$PATH"
 
