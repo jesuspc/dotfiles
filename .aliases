@@ -11,12 +11,10 @@ Ts(){
 }
 alias ts=Ts
 alias s='subl'
-alias emacs='tmux attach-session -t emacs || tmux new -d -s emacs "emacs"\; attach'
+alias emacst='tmux attach-session -t emacs || tmux new -d -s emacs "emacs"\; attach'
 Tvim(){
   tmux new "vim $1"
 }
-alias vim=nvim
-alias tvim=Tvim
 alias d='docker'
 DockerContainerBash(){
   docker run -v ~/Code:/home/developer/Code -i -t $1 /bin/zsh
