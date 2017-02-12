@@ -17,7 +17,6 @@
      spotify
      better-defaults
      emacs-lisp
-     osx
      fasd
      docker
      slack
@@ -154,11 +153,25 @@
                 evil-escape-key-sequence "jk"
                 monokai-highlight-line "#3A3A3A"
                 truncate-lines t
-                )
+                mac-right-option-modifier nil)
   )
 
 (defun dotspacemacs/user-config ()
-
+  (custom-set-faces
+   '(term ((t (:inherit default)))))
+  ;; ;; Enable mouse support
+  ;; (unless window-system
+  ;;   (require 'mouse)
+  ;;   (xterm-mouse-mode t)
+  ;;   (global-set-key [mouse-4] (lambda ()
+  ;;                               (interactive)
+  ;;                               (scroll-down 1)))
+  ;;   (global-set-key [mouse-5] (lambda ()
+  ;;                               (interactive)
+  ;;                               (scroll-up 1)))
+  ;;   (defun track-mouse (e))
+  ;;   (setq mouse-sel-mode t)
+  ;;   )
   ;; Org-Capture
   (setq org-capture-templates
         '(("t" "Todo" entry (file+headline "~/org/gtd.org" "Tasks")
@@ -172,6 +185,17 @@
          )
   )
 
+  (defun last-search-buffer ()
+    "open last helm-ag or hgrep buffer."
+    (interactive)
+    (cond ((get-buffer "*helm ag results*")
+           (switch-to-buffer-other-window "*helm ag results*"))
+          ((get-buffer "*helm-ag*")
+           (helm-resume "*helm-ag*"))
+          ((get-buffer "*hgrep*")
+           (switch-to-buffer-other-window "*hgrep*"))
+          (t
+           (message "No previous search buffer found"))))
   ;; Wand
   (require 'wand)
   (global-set-key (kbd "<C-return>") 'wand:execute)
