@@ -7,54 +7,67 @@
    ;; Paths must have a trailing slash (i.e. `~/.mycontribs/')
    dotspacemacs-configuration-layer-path '()
    dotspacemacs-configuration-layers
-   '(
-     erc
-     octave
-     slack
-     yaml
-     restclient
-     auto-completion
-     spotify
-     better-defaults
-     emacs-lisp
-     fasd
-     docker
-     slack
-     private-layer
-     git
-     github
-     markdown
-     pandoc
-     shell
-     search-engine
-     org
-     (shell :variables
-            shell-default-height 30
-            shell-default-position 'bottom
-            shell-default-shell 'eshell)
-     ; spell-checking
-     syntax-checking
-     version-control
-     (haskell :variables
-              haskell-enable-ghc-mod-support nil
-              haskell-process-type 'stack-ghci
-              haskell-completion-backend 'intero
-              haskell-process-args-stack-ghci '("--ghc-options=-ferror-spans" "--with-ghc=intero")
-              hindent-style  "johan-tibell"
-              haskell-stylish-on-save t
-              )
-     ruby
-     ruby-on-rails
-     elixir
-     erlang
-     html
-     javascript
-     nlinum
-     (osx :variables osx-use-option-as-meta nil)
-     ranger
-     ibuffer
-     )
-   dotspacemacs-additional-packages '(evil-terminal-cursor-changer company-ghci scroll-restore litable wand highlight-indent-guides)
+     '(
+       php
+       dash
+       ivy
+       python
+       erc
+       octave
+       slack
+       yaml
+       restclient
+       (auto-completion  :variables
+                         auto-completion-enable-help-tooltip t
+                         auto-completion-enable-sort-by-usage t
+                         auto-completion-enable-snippets-in-popup t
+                         haskell-completion-backend 'intero)
+       spotify
+       better-defaults
+       emacs-lisp
+       java
+       fasd
+       docker
+       slack
+       private-layer
+       nixos
+       git
+       github
+       markdown
+       pandoc
+       idris
+       shell
+       search-engine
+       org
+       (shell :variables
+              shell-default-height 30
+              shell-default-position 'bottom
+              shell-default-shell 'eshell)
+                                        ; spell-checking
+       syntax-checking
+       version-control
+       (haskell :variables
+                haskell-enable-ghc-mod-support t
+                haskell-enable-shm-support t
+                haskell-process-type 'stack-ghci
+                haskell-completion-backend 'intero
+                haskell-process-args-stack-ghci '("--ghc-options=-ferror-spans" "--with-ghc=intero")
+                haskell-enable-hindent-style  "gibiansky"
+                haskell-stylish-on-save t
+                )
+       ruby
+       ruby-on-rails
+       elixir
+       erlang
+       html
+       javascript
+       react
+       nlinum
+       (osx :variables osx-use-option-as-meta nil)
+       ranger
+       ibuffer
+       )
+dotspacemacs-additional-packages '(solidity-mode nix-sandbox evil-terminal-cursor-changer company-ghci scroll-restore litable wand highlight-indent-guides)
    dotspacemacs-excluded-packages '(linum-mode smooth-scrolling spaceline)
    dotspacemacs-delete-orphan-packages t))
 
@@ -77,7 +90,7 @@
                          leuven
                          zenburn)
    dotspacemacs-colorize-cursor-according-to-state nil
-   dotspacemacs-default-font '("Fira Code";;"Hasklig";;"Source Code Pro"
+   dotspacemacs-default-font '("Fira Mono";;"Hasklig";;"Source Code Pro"
                                :size 12
                                :weight normal
                                :width normal
@@ -132,7 +145,7 @@
    ;; Transparency can be toggled through `toggle-transparency'. (default 90)
    dotspacemacs-inactive-transparency 90
    ;; If non nil unicode symbols are displayed in the mode line. (default t)
-   dotspacemacs-mode-line-unicode-symbols t
+   dotspacemacs-mode-line-unicode-symbols nil
    dotspacemacs-smooth-scrolling t
    dotspacemacs-line-numbers t
    dotspacemacs-smartparens-strict-mode nil
@@ -149,6 +162,7 @@
 (defun dotspacemacs/user-init ()
   (setq-default evil-search-module 'evil-search
                 js2-basic-offset 2
+                js2-strict-missing-semi-warning nil
                 js-indent-level 2
                 evil-escape-key-sequence "jk"
                 monokai-highlight-line "#3A3A3A"
@@ -157,6 +171,31 @@
   )
 
 (defun dotspacemacs/user-config ()
+
+  ;; (eval-after-load 'company
+  ;;   '(push 'company-robe company-backends))
+  ;; disable jshint since we prefer eslint checking
+  (setq-default flycheck-disabled-checkers
+                (append flycheck-disabled-checkers
+                        '(javascript-jshint)))
+
+  ;; use eslint with react-mode for jsx files
+  (flycheck-add-mode 'javascript-eslint 'react-mode)
+
+  (use-package nix-sandbox)
+
+  (setq-default
+   web-mode-markup-indent-offset 2
+   web-mode-css-indent-offset 2
+   web-mode-code-indent-offset 2
+   web-mode-indent-style 2
+   )
+
+  (define-key global-map (kbd "C-h") 'evil-window-left)
+  (define-key global-map (kbd "C-j") 'evil-window-down)
+  (define-key global-map (kbd "C-k") 'evil-window-up)
+  (define-key global-map (kbd "C-l") 'evil-window-right)
+
   (custom-set-faces
    '(term ((t (:inherit default)))))
   ;; ;; Enable mouse support
@@ -211,7 +250,7 @@
 
   ;; Enable multiple cursors
   (global-evil-mc-mode 1)
-  (global-company-mode t)
+  ;; (global-company-mode t)
 
   (setq-default flycheck-disabled-checkers
                 (append flycheck-disabled-checkers
@@ -237,8 +276,11 @@
                                  (turn-on-haskell-indentation)
                                  (hindent-mode)
                                  (setq haskell-stylish-on-save t)
-                                 (flycheck-add-next-checker 'intero '(warning . haskell-hlint))
                                  ))
+  (with-eval-after-load 'intero
+    (flycheck-add-next-checker 'intero '(warning . haskell-hlint))
+    (flycheck-add-next-checker 'intero 'haskell-stack-ghc)
+    )
   ;; (add-hook 'haskell-mode-hook 'structured-haskell-mode)
 
   ;; Org-mode
@@ -259,13 +301,13 @@
 
   ;; (defun custom-alchemist-hook ()
   ;;   (set (make-local-variable 'company-backends) '(alchemist-company)))
-  (add-to-list 'company-backends 'alchemist-company)
+  ;; (add-to-list 'company-backends 'alchemist-company)
 
   ;;(add-hook 'alchemist-mode-hook  'custom-alchemist-hook)
 
   ;; Fill column
   ;; (setq fci-rule-color "#75715F")
-  ;; (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
+  (add-hook 'prog-mode-hook 'spacemacs/toggle-fill-column-indicator-on)
 
   ;; Indent guide
   (setq indent-guide-recursive t)
@@ -276,8 +318,8 @@
   (require 'highlight-indent-guides)
   (setq highlight-indent-guides-method 'character)
   (add-hook 'prog-mode-hook 'highlight-indent-guides-mode)
-  (add-hook 'prog-mode-hook 'centered-cursor-mode)
-  (add-hook 'text-mode-hook 'centered-cursor-mode)
+  ;; (add-hook 'prog-mode-hook 'centered-cursor-mode)
+  ;; (add-hook 'text-mode-hook 'centered-cursor-mode)
 
   ;; Custom key bindings
 ;;; esc quits
@@ -317,11 +359,15 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   ;(with-eval-after-load 'smartparens
   ;  (show-smartparens-global-mode -1))
 
-  (global-set-key (kbd "s-p") 'helm-projectile-find-file)
+  ;; (global-set-key (kbd "s-p") 'helm-projectile-find-file)
   (global-set-key (kbd "s-m") 'magit-status)
   (global-set-key (kbd "s-f") 'spacemacs/helm-find-files)
   (global-set-key (kbd "s-+") 'text-scale-increase)
   (global-set-key (kbd "s--") 'text-scale-decrease)
+  (add-hook 'idris-repl-mode-hook
+            (lambda ()
+              (local-set-key (kbd "<M-up>") 'idris-repl-backward-history)
+              (local-set-key (kbd "<M-down>") 'idris-repl-forward-history)))
   ;; Horizontal scrolling
   (global-set-key (kbd "<wheel-right>") '(lambda ()
                                            (interactive)
@@ -381,6 +427,17 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
   (global-set-key [s-up] 'windmove-up)
   (global-set-key [s-down] 'windmove-down)
 
+  (require 'solidity-mode)
+
+  (setq eclim-eclipse-dirs '("~/opt/eclipse/java-oxygen2/Eclipse.app/Contents/Eclipse")
+        eclim-executable "~/opt/eclipse/java-oxygen2/Eclipse.app/Contents/Eclipse/eclim")
+
+  ;; (setq helm-dash-docset-newpath "~/Library/Application Support/Dash/DocSets")
+  ;; (setq counsel-dash-docset-newpath "~/Library/Application Support/Dash/DocSets")
+  (setq helm-dash-browser-func 'eww)
+  (setq counsel-dash-browser-func 'eww)
+
+  (setq ivy-initial-inputs-alist nil)
   )
 
 (custom-set-variables
@@ -428,7 +485,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
     ("#dc322f" "#cb4b16" "#b58900" "#546E00" "#B4C342" "#00629D" "#2aa198" "#d33682" "#6c71c4")))
  '(package-selected-packages
    (quote
-    (haml-mode gitignore-mode fringe-helper git-gutter+ pos-tip flx web-completion-data pkg-info epl evil-terminal-cursor-changer erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks spinner bind-map highlight-indent-guides wand ob-elixir minitest hide-comnt org erlang litable restclient ob-http yaml-mode smooth-scroll pug-mode slack emojify circe oauth2 websocket dockerfile-mode docker tablist docker-tramp fasd grizzl spotify helm-spotify multi magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache stickyfunc-enhance srefactor ibuffer-projectile flyspell-correct-helm flyspell-correct auto-dictionary zenburn-theme solarized-theme ranger fcitx pangu-spacing find-by-pinyin-dired chinese-pyim chinese-pyim-basedict ace-pinyin pinyinlib ace-jump-mode pandoc-mode ox-pandoc ht scroll-restore hlint-refactor helm-hoogle uuidgen osx-dictionary org-projectile org-download nlinum-relative nlinum mwim livid-mode skewer-mode simple-httpd link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode request xterm-color window-numbering web-mode toc-org shm ruby-test-mode rspec-mode projectile-rails rake f persp-mode page-break-lines orgit org-pomodoro alert org-plus-contrib neotree multi-term markdown-toc markdown-mode magit-gitflow leuven-theme less-css-mode json-mode js-doc intero info+ hl-todo hindent highlight-numbers helm-swoop helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag google-translate gitconfig-mode git-messenger feature-mode expand-region exec-path-from-shell evil-mc evil-matchit evil-magit magit magit-popup evil-exchange eshell-prompt-extras diff-hl company-tern dash-functional tern company-quickhelp coffee-mode bundler buffer-move auto-yasnippet auto-compile ace-link auto-complete avy elixir-mode ghc anzu iedit smartparens highlight haskell-mode flycheck git-gutter git-commit with-editor company helm popup helm-core async yasnippet multiple-cursors js2-mode hydra inf-ruby dash s quelpa package-build use-package which-key evil spacemacs-theme ws-butler web-beautify volatile-highlights vi-tilde-fringe undo-tree tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-end rubocop robe reveal-in-osx-finder restart-emacs rbenv rainbow-delimiters popwin pcre2el pbcopy parent-mode paradox packed osx-trash org-repo-todo org-present org-bullets open-junk-file move-text mmm-mode macrostep lorem-ipsum log4e linum-relative launchctl json-snatcher json-reformat js2-refactor jade-mode inflections indent-guide ido-vertical-mode hungry-delete htmlize highlight-parentheses highlight-indentation help-fns+ helm-themes helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company haskell-snippets goto-chg golden-ratio gnuplot gntp gitattributes-mode git-timemachine git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-iedit-state evil-escape evil-args evil-anzu eval-sexp-fu esh-help engine-mode emmet-mode elisp-slime-nav diminish define-word company-web company-statistics company-ghci company-ghc company-cabal cmm-mode clean-aindent-mode chruby bracketed-paste bind-key auto-highlight-symbol alchemist aggressive-indent adaptive-wrap ace-window ace-jump-helm-line ac-ispell)))
+    (dash-at-point counsel-dash helm-dash company-emacs-eclim eclim wgrep smex ivy-hydra counsel-projectile counsel swiper ivy phpunit phpcbf php-extras php-auto-yasnippets drupal-mode php-mode solidity-mode nix-sandbox nix-mode helm-nixos-options company-nixos-options nixos-options winum unfill restclient-helm ob-restclient fuzzy flycheck-credo company-restclient know-your-http-well idris-mode prop-menu exwm yapfify pyvenv pytest pyenv-mode py-isort pip-requirements live-py-mode hy-mode helm-pydoc cython-mode company-anaconda anaconda-mode pythonic haml-mode gitignore-mode fringe-helper git-gutter+ pos-tip flx web-completion-data pkg-info epl evil-terminal-cursor-changer erc-yt erc-view-log erc-terminal-notifier erc-social-graph erc-image erc-hl-nicks spinner bind-map highlight-indent-guides wand ob-elixir minitest hide-comnt org erlang litable restclient ob-http yaml-mode smooth-scroll pug-mode slack emojify circe oauth2 websocket dockerfile-mode docker tablist docker-tramp fasd grizzl spotify helm-spotify multi magit-gh-pulls github-search github-clone github-browse-file gist gh marshal logito pcache stickyfunc-enhance srefactor ibuffer-projectile flyspell-correct-helm flyspell-correct auto-dictionary zenburn-theme solarized-theme ranger fcitx pangu-spacing find-by-pinyin-dired chinese-pyim chinese-pyim-basedict ace-pinyin pinyinlib ace-jump-mode pandoc-mode ox-pandoc ht scroll-restore hlint-refactor helm-hoogle uuidgen osx-dictionary org-projectile org-download nlinum-relative nlinum mwim livid-mode skewer-mode simple-httpd link-hint git-link flycheck-mix eyebrowse evil-visual-mark-mode evil-unimpaired evil-ediff eshell-z dumb-jump column-enforce-mode request xterm-color window-numbering web-mode toc-org shm ruby-test-mode rspec-mode projectile-rails rake f persp-mode page-break-lines orgit org-pomodoro alert org-plus-contrib neotree multi-term markdown-toc markdown-mode magit-gitflow leuven-theme less-css-mode json-mode js-doc intero info+ hl-todo hindent highlight-numbers helm-swoop helm-projectile helm-make projectile helm-descbinds helm-c-yasnippet helm-ag google-translate gitconfig-mode git-messenger feature-mode expand-region exec-path-from-shell evil-mc evil-matchit evil-magit magit magit-popup evil-exchange eshell-prompt-extras diff-hl company-tern dash-functional tern company-quickhelp coffee-mode bundler buffer-move auto-yasnippet auto-compile ace-link auto-complete avy elixir-mode ghc anzu iedit smartparens highlight haskell-mode flycheck git-gutter git-commit with-editor company helm popup helm-core async yasnippet multiple-cursors js2-mode hydra inf-ruby dash s quelpa package-build use-package which-key evil spacemacs-theme ws-butler web-beautify volatile-highlights vi-tilde-fringe undo-tree tagedit smeargle slim-mode shell-pop scss-mode sass-mode rvm ruby-tools ruby-end rubocop robe reveal-in-osx-finder restart-emacs rbenv rainbow-delimiters popwin pcre2el pbcopy parent-mode paradox packed osx-trash org-repo-todo org-present org-bullets open-junk-file move-text mmm-mode macrostep lorem-ipsum log4e linum-relative launchctl json-snatcher json-reformat js2-refactor jade-mode inflections indent-guide ido-vertical-mode hungry-delete htmlize highlight-parentheses highlight-indentation help-fns+ helm-themes helm-mode-manager helm-gitignore helm-flx helm-css-scss helm-company haskell-snippets goto-chg golden-ratio gnuplot gntp gitattributes-mode git-timemachine git-gutter-fringe git-gutter-fringe+ gh-md flycheck-pos-tip flycheck-haskell flx-ido fill-column-indicator fancy-battery evil-visualstar evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-lisp-state evil-indent-plus evil-iedit-state evil-escape evil-args evil-anzu eval-sexp-fu esh-help engine-mode emmet-mode elisp-slime-nav diminish define-word company-web company-statistics company-ghci company-ghc company-cabal cmm-mode clean-aindent-mode chruby bracketed-paste bind-key auto-highlight-symbol alchemist aggressive-indent adaptive-wrap ace-window ace-jump-helm-line ac-ispell)))
  '(pos-tip-background-color "#073642")
  '(pos-tip-foreground-color "#93a1a1")
  '(smartrep-mode-line-active-bg (solarized-color-blend "#859900" "#073642" 0.2))
@@ -469,56 +526,7 @@ then it takes a second \\[keyboard-quit] to abort the minibuffer."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
+ '(default ((((class color) (min-colors 257)) (:foreground "#F8F8F2" :background "#272822")) (((class color) (min-colors 89)) (:foreground "#F5F5F5" :background "#1B1E1C"))))
  '(company-tooltip-common ((t (:inherit company-tooltip :weight bold :underline nil))))
- '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil)))))
-
-(when (window-system)
-  (set-default-font "Fira Code"))
-(let ((alist '((33 . ".\\(?:\\(?:==\\|!!\\)\\|[!=]\\)")
-               (35 . ".\\(?:###\\|##\\|_(\\|[#(?[_{]\\)")
-               (36 . ".\\(?:>\\)")
-               (37 . ".\\(?:\\(?:%%\\)\\|%\\)")
-               (38 . ".\\(?:\\(?:&&\\)\\|&\\)")
-               (42 . ".\\(?:\\(?:\\*\\*/\\)\\|\\(?:\\*[*/]\\)\\|[*/>]\\)")
-               (43 . ".\\(?:\\(?:\\+\\+\\)\\|[+>]\\)")
-               (45 . ".\\(?:\\(?:-[>-]\\|<<\\|>>\\)\\|[<>}~-]\\)")
-               (46 . ".\\(?:\\(?:\\.[.<]\\)\\|[.=-]\\)")
-               (47 . ".\\(?:\\(?:\\*\\*\\|//\\|==\\)\\|[*/=>]\\)")
-               (48 . ".\\(?:x[a-zA-Z]\\)")
-               (58 . ".\\(?:::\\|[:=]\\)")
-               (59 . ".\\(?:;;\\|;\\)")
-               (60 . ".\\(?:\\(?:!--\\)\\|\\(?:~~\\|->\\|\\$>\\|\\*>\\|\\+>\\|--\\|<[<=-]\\|=[<=>]\\||>\\)\\|[*$+~/<=>|-]\\)")
-               (61 . ".\\(?:\\(?:/=\\|:=\\|<<\\|=[=>]\\|>>\\)\\|[<=>~]\\)")
-               (62 . ".\\(?:\\(?:=>\\|>[=>-]\\)\\|[=>-]\\)")
-               ;; (63 . ".\\(?:\\(\\?\\?\\)\\|[:=?]\\)")
-               (91 . ".\\(?:]\\)")
-               (92 . ".\\(?:\\(?:\\\\\\\\\\)\\|\\\\\\)")
-               (94 . ".\\(?:=\\)")
-               (119 . ".\\(?:ww\\)")
-               (123 . ".\\(?:-\\)")
-               (124 . ".\\(?:\\(?:|[=|]\\)\\|[=>|]\\)")
-               (126 . ".\\(?:~>\\|~~\\|[>=@~-]\\)")
-               )
-             ))
-  (dolist (char-regexp alist)
-    (set-char-table-range composition-function-table (car char-regexp)
-                          `([,(cdr char-regexp) 0 font-shape-gstring]))))
-
-
-(defun bf-pretty-print-xml-region (begin end)
-  "Pretty format XML markup in region. You need to have nxml-mode
-http://www.emacswiki.org/cgi-bin/wiki/NxmlMode installed to do
-
-this.  The function inserts linebreaks to separate tags that have
-
-nothing but whitespace between them.  It then indents the markup
-
-by using nxml's indentation rules."
-  (interactive "r")
-  (save-excursion
-    (nxml-mode)
-    (goto-char begin)
-    (while (search-forward-regexp "\>[ \\t]*\<" nil t)
-      (backward-char) (insert "\n"))
-    (indent-region begin end))
-  (message "Ah, much better!"))
+ '(company-tooltip-common-selection ((t (:inherit company-tooltip-selection :weight bold :underline nil))))
+ '(term ((t (:inherit default)))))
