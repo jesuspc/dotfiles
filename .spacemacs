@@ -76,7 +76,7 @@ values."
      html
      (c-c++ :variables c-c++-enable-clang-support t)
      clojure
-     semantic
+     ;; semantic
      cscope
      )
    ;; List of additional packages that will be installed without being
@@ -368,12 +368,11 @@ you should place your code here."
     (flycheck-add-next-checker 'intero '(warning . haskell-hlint))
     )
 
-  ;; (add-hook 'haskell-mode-hook
-  ;;           (lambda () (add-hook 'before-save-hook 'hindent-reformat-buffer nil 'local)))
-
   (add-hook 'haskell-mode-hook
             (lambda () (hindent-mode)))
 
+
+  ;; Stylish haskell provides less features than hindent
   ;; (setq haskell-stylish-on-save t)
   (setq hindent-reformat-buffer-on-save t)
 
