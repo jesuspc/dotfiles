@@ -30,7 +30,7 @@ values."
    dotspacemacs-configuration-layer-path '()
    ;; List of configuration layers to load.
    dotspacemacs-configuration-layers
-   '(
+   '(csv
      python
      shell-scripts
      typescript
@@ -42,7 +42,8 @@ values."
      ;; <M-m f e R> (Emacs style) to install them.
      ;; ----------------------------------------------------------------
      ruby
-     ivy
+     rust
+     helm
      go
      sql
      tmux
@@ -52,7 +53,8 @@ values."
      emacs-lisp
      git
      markdown
-     org
+     (org :variables
+          org-enable-reveal-js-support t)
      restclient
      (auto-completion  :variables
                        auto-completion-enable-help-tooltip t
@@ -69,6 +71,7 @@ values."
      javascript
      ibuffer
      ranger
+     multiple-cursors
      (haskell :variables
               haskell-completion-backend 'intero
               haskell-enable-hindent-style "johan-tibell")
@@ -78,12 +81,13 @@ values."
      clojure
      ;; semantic
      cscope
+     scala
      )
    ;; List of additional packages that will be installed without being
    ;; wrapped in a layer. If you need some configuration for these
    ;; packages, then consider creating a layer. You can also put the
    ;; configuration in `dotspacemacs/user-config'.
-   dotspacemacs-additional-packages '(evil-terminal-cursor-changer prettier-js)
+   dotspacemacs-additional-packages '(evil-terminal-cursor-changer prettier-js xclip dhall-mode org-brain)
    ;; A list of packages that cannot be updated.
    dotspacemacs-frozen-packages '()
    ;; A list of packages that will not be installed and loaded.
@@ -188,7 +192,7 @@ values."
    ;; and TAB or <C-m> and RET.
    ;; In the terminal, these pairs are generally indistinguishable, so this only
    ;; works in the GUI. (default nil)
-   dotspacemacs-distinguish-gui-tab nil
+   dotspacemacs-distinguish-gui-tab t
    ;; If non nil `Y' is remapped to `y$' in Evil states. (default nil)
    dotspacemacs-remap-Y-to-y$ nil
    ;; If non-nil, the shift mappings `<' and `>' retain visual state if used
@@ -234,7 +238,7 @@ values."
    dotspacemacs-helm-use-fuzzy 'always
    ;; If non nil the paste micro-state is enabled. When enabled pressing `p`
    ;; several times cycle between the kill ring content. (default nil)
-   dotspacemacs-enable-paste-transient-state nil
+   dotspacemacs-enable-paste-transient-state t
    ;; Which-key delay in seconds. The which-key buffer is the popup listing
    ;; the commands bound to the current keystroke sequence. (default 0.4)
    dotspacemacs-which-key-delay 0.1
@@ -345,11 +349,12 @@ you should place your code here."
   (define-key global-map (kbd "C-k") 'evil-window-up)
   (define-key global-map (kbd "C-l") 'evil-window-right)
 
-  (global-evil-mc-mode 1)
+  ;; (global-evil-mc-mode 1)
 
-  (setq ivy-initial-inputs-alist nil)
+  (setq-default evil-escape-key-sequence "jk")
+  ;; (setq ivy-initial-inputs-alist nil)
 
-  (setq projectile-enable-caching t)
+  ;; (setq projectile-enable-caching t)
 
   (unless (display-graphic-p)
     (require 'evil-terminal-cursor-changer)
@@ -357,10 +362,10 @@ you should place your code here."
     )
 
   ;; Swagger mode
-  (add-to-list 'load-path
-               (expand-file-name "local" user-emacs-directory))
+  ;; (add-to-list 'load-path
+  ;;              (expand-file-name "local" user-emacs-directory))
 
-  (require 'swagger-mode)
+  ;; (require 'swagger-mode)
 
 
   ;; Haskell mode
@@ -368,13 +373,13 @@ you should place your code here."
     (flycheck-add-next-checker 'intero '(warning . haskell-hlint))
     )
 
-  (add-hook 'haskell-mode-hook
-            (lambda () (hindent-mode)))
+  ;; (add-hook 'haskell-mode-hook
+  ;;           (lambda () (hindent-mode)))
 
 
   ;; Stylish haskell provides less features than hindent
-  ;; (setq haskell-stylish-on-save t)
-  (setq hindent-reformat-buffer-on-save t)
+  (setq haskell-stylish-on-save nil)
+  (setq hindent-reformat-buffer-on-save nil)
 
   ;; JS mode
   (setq js-indent-level 2
@@ -390,14 +395,117 @@ you should place your code here."
   (add-hook 'typescript-mode-hook 'prettier-js-mode)
   (add-hook 'js2-mode-hook 'prettier-js-mode)
   (add-hook 'web-mode-hook 'prettier-js-mode)
+
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
+
   ;;;; Temporary fix for React mode not being automatically detected
-  (add-to-list 'magic-mode-alist '("^import React" . react-mode))
+  ;; (add-to-list 'magic-mode-alist '("^import React" . react-mode))
 
   ;; C++ mode
   (add-hook 'c++-mode-hook
             (lambda () (add-hook 'before-save-hook 'clang-format-buffer nil 'local)))
 
-  )
+  ;; Rust
+  (setq rust-format-on-save t)
+  (setq racer-rust-src-path "~/Code/misc/rust/src")
+  (setq rust-backend 'racer)
+  (setq rust-rls-cmd "rls")
+
+  ;; Dhall mode
+
+  ;; (use-package dhall-mode
+  ;;   :ensure t
+  ;;   :mode "\\.dhall\\'")
+
+  ;; Presentations
+
+  (setq org-reveal-root "~/Code/misc/reveal.js-3.6.0")
+
+  ;; == Terminal ==
+  ;; XClip integration
+
+  (require 'xclip)
+  (define-globalized-minor-mode global-xclip-mode
+    xclip-mode xclip-mode)
+
+  (global-xclip-mode 1)
+
+  ;; Flycheck
+
+  (eval-after-load 'flycheck
+    '(progn
+      (set-face-attribute 'flycheck-error nil
+                          :foreground "yellow"
+                          :background "red")))
+
+  ;; == Org mode ==
+
+  (setq org-agenda-files (list "~/Dropbox/org_synched/inbox.org" "~/Dropbox/org_synched/gdt.org" "~/Dropbox/org_synched/tickler.org"))
+  (setq org-default-notes-file "~/Dropbox/org_synched/notes.org")
+
+  (setq org-capture-templates '(("n" "Note [notes]" entry
+                                (file+headline "~/Dropbox/org_synched/notes.org" "Notes")
+                                "* %i%?\n%T")
+                                ("t" "Todo [inbox]" entry
+                                 (file+headline "~/Dropbox/org_synched/inbox.org" "Tasks")
+                                 "* TODO %i%?")
+                                ("T" "Tickler" entry
+                                 (file+headline "~/Dropbox/org_synched/tickler.org" "Tickler")
+                                 "* %i%? \n %U")))
+
+  (setq org-todo-keywords '((sequence "TODO(t)" "WAITING(w)" "|" "DONE(d)" "CANCELLED(c)")))
+  (setq org-log-done 'time)
+
+  (setq org-refile-targets '(("~/Dropbox/org_synched/gdt.org" :maxlevel . 3)
+                             ("~/Dropbox/org_synched/tickler.org" :maxlevel . 2)
+                             ("~/Dropbox/org_synched/someday.org" :maxlevel . 1)
+                             ))
+
+  (setq org-agenda-custom-commands
+        '(("o" "At the office" todo ""
+           ((org-agenda-overriding-header "Office")
+            (org-agenda-skip-function #'my-org-agenda-skip-all-siblings-but-first)))))
+
+  (defun my-org-agenda-skip-all-siblings-but-first ()
+    "Skip all but the first non-done entry."
+    (let (should-skip-entry)
+      (unless (org-current-is-todo)
+        (setq should-skip-entry t))
+      (save-excursion
+        (while (and (not should-skip-entry) (org-goto-sibling t))
+          (when (org-current-is-todo)
+            (setq should-skip-entry t))))
+      (when should-skip-entry
+        (or (outline-next-heading)
+            (goto-char (point-max))))))
+
+  (defun org-current-is-todo ()
+    (string= "TODO" (org-get-todo-state)))
+
+  (use-package org-brain :ensure t
+    :init
+    (setq org-brain-path "~/Dropbox/org_synched/brain")
+    ;; For Evil users
+    (with-eval-after-load 'evil
+      (evil-set-initial-state 'org-brain-visualize-mode 'emacs))
+    :config
+    (setq org-id-track-globally t)
+    (setq org-id-locations-file "~/.emacs.d/.org-id-locations")
+    ;; (push '("b" "Brain" plain (function org-brain-goto-end)
+    ;;         "* %i%?" :empty-lines 1)
+    ;;       org-capture-templates)
+    (setq org-brain-visualize-default-choices 'all)
+    (setq org-brain-title-max-length 12))
+
+  ;; == Other ==
+
+  (setq tide-tsserver-process-environment '("TSS_LOG=-level verbose -file /tmp/tss.log"))
+
+  (setq local-function-key-map (delq '(kp-tab . [9]) local-function-key-map))
+  (global-set-key (kbd "C-i") 'evil-jump-forward)
+
+  ;; (indent-guide-global-mode)
+)
 
 ;; Do not write anything past this comment. This is where Emacs will
 ;; auto-generate custom variable definitions.
@@ -408,7 +516,7 @@ you should place your code here."
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
    (quote
-    (yapfify xcscope tide typescript-mode stickyfunc-enhance srefactor rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake pyvenv pytest pyenv-mode py-isort prettier-js pip-requirements org-mime minitest live-py-mode hy-mode disaster cython-mode company-c-headers company-anaconda cmake-mode clojure-snippets clj-refactor inflections edn paredit peg clang-format cider-eval-sexp-fu cider seq queue clojure-mode chruby bundler inf-ruby anaconda-mode pythonic go-guru go-eldoc company-go go-mode terraform-mode hcl-mode sql-indent dockerfile-mode docker tablist docker-tramp yaml-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data evil-terminal-cursor-changer web-beautify unfill smeargle ranger orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download ob-restclient ob-http nix-mode mwim mmm-mode markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero ibuffer-projectile htmlize hlint-refactor hindent haskell-snippets gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-ivy flyspell-correct flycheck-pos-tip flycheck-haskell flycheck fasd evil-magit magit magit-popup git-commit with-editor engine-mode diff-hl company-tern dash-functional tern company-statistics company-restclient restclient know-your-http-well company-quickhelp pos-tip company-nixos-options nixos-options company-ghci company-ghc ghc haskell-mode company-cabal company coffee-mode cmm-mode auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+    (restclient-helm ox-reveal omnisharp shut-up insert-shebang helm-themes helm-swoop helm-pydoc helm-projectile helm-nixos-options helm-mode-manager helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-cscope helm-company helm-c-yasnippet helm-ag flyspell-correct-helm fish-mode ghub let-alist csharp-mode company-shell ace-jump-helm-line yapfify xcscope tide typescript-mode stickyfunc-enhance srefactor rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake pyvenv pytest pyenv-mode py-isort prettier-js pip-requirements org-mime minitest live-py-mode hy-mode disaster cython-mode company-c-headers company-anaconda cmake-mode clojure-snippets clj-refactor inflections edn paredit peg clang-format cider-eval-sexp-fu cider seq queue clojure-mode chruby bundler inf-ruby anaconda-mode pythonic go-guru go-eldoc company-go go-mode terraform-mode hcl-mode sql-indent dockerfile-mode docker tablist docker-tramp yaml-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data evil-terminal-cursor-changer web-beautify unfill smeargle ranger orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download ob-restclient ob-http nix-mode mwim mmm-mode markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero ibuffer-projectile htmlize hlint-refactor hindent haskell-snippets gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-ivy flyspell-correct flycheck-pos-tip flycheck-haskell flycheck fasd evil-magit magit magit-popup git-commit with-editor engine-mode diff-hl company-tern dash-functional tern company-statistics company-restclient restclient know-your-http-well company-quickhelp pos-tip company-nixos-options nixos-options company-ghci company-ghc ghc haskell-mode company-cabal company coffee-mode cmm-mode auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
  '(safe-local-variable-values (quote ((projectile-project-compilation-cmd . "make")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -426,20 +534,10 @@ This function is called at the very end of Spacemacs initialization."
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("fa2b58bb98b62c3b8cf3b6f02f058ef7827a8e497125de0254f56e373abee088" "bffa9739ce0752a37d9b1eee78fc00ba159748f50dc328af4be661484848e476" default)))
- '(evil-want-Y-yank-to-eol nil)
  '(package-selected-packages
    (quote
-    (insert-shebang flycheck-bashate fish-mode company-shell yapfify xcscope tide typescript-mode stickyfunc-enhance srefactor rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake pyvenv pytest pyenv-mode py-isort prettier-js pip-requirements org-mime minitest live-py-mode hy-mode disaster cython-mode company-c-headers company-anaconda cmake-mode clojure-snippets clj-refactor inflections edn paredit peg clang-format cider-eval-sexp-fu cider seq queue clojure-mode chruby bundler inf-ruby anaconda-mode pythonic go-guru go-eldoc company-go go-mode terraform-mode hcl-mode sql-indent dockerfile-mode docker tablist docker-tramp yaml-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data evil-terminal-cursor-changer web-beautify unfill smeargle ranger orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download ob-restclient ob-http nix-mode mwim mmm-mode markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero ibuffer-projectile htmlize hlint-refactor hindent haskell-snippets gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-ivy flyspell-correct flycheck-pos-tip flycheck-haskell flycheck fasd evil-magit magit magit-popup git-commit with-editor engine-mode diff-hl company-tern dash-functional tern company-statistics company-restclient restclient know-your-http-well company-quickhelp pos-tip company-nixos-options nixos-options company-ghci company-ghc ghc haskell-mode company-cabal company coffee-mode cmm-mode auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
- '(safe-local-variable-values
-   (quote
-    ((intero-targets "evo:lib" "evo:exe:evo" "evo:test:evo-test-suite" "evo:bench:evo-benchmarks")
-     (intero-targets "evo:test:evo-test-suite")
-     (intero-targets "evo:lib" "evo:exe:evo" "evo:test-suite:evo-test-suite")
-     (intero-targets "evo:lib" "evo:exe:evo" "evo:test:evo-test-suite")
-     (projectile-project-compilation-cmd . "make")))))
+    (toml-mode racer flycheck-rust cargo rust-mode restclient-helm ox-reveal omnisharp shut-up insert-shebang helm-themes helm-swoop helm-pydoc helm-projectile helm-nixos-options helm-mode-manager helm-hoogle helm-gitignore helm-flx helm-descbinds helm-css-scss helm-cscope helm-company helm-c-yasnippet helm-ag flyspell-correct-helm fish-mode ghub let-alist csharp-mode company-shell ace-jump-helm-line yapfify xcscope tide typescript-mode stickyfunc-enhance srefactor rvm ruby-tools ruby-test-mode rubocop rspec-mode robe rbenv rake pyvenv pytest pyenv-mode py-isort prettier-js pip-requirements org-mime minitest live-py-mode hy-mode disaster cython-mode company-c-headers company-anaconda cmake-mode clojure-snippets clj-refactor inflections edn paredit peg clang-format cider-eval-sexp-fu cider seq queue clojure-mode chruby bundler inf-ruby anaconda-mode pythonic go-guru go-eldoc company-go go-mode terraform-mode hcl-mode sql-indent dockerfile-mode docker tablist docker-tramp yaml-mode web-mode tagedit slim-mode scss-mode sass-mode pug-mode less-css-mode haml-mode emmet-mode company-web web-completion-data evil-terminal-cursor-changer web-beautify unfill smeargle ranger orgit org-projectile org-category-capture org-present org-pomodoro alert log4e gntp org-download ob-restclient ob-http nix-mode mwim mmm-mode markdown-toc markdown-mode magit-gitflow livid-mode skewer-mode simple-httpd json-mode json-snatcher json-reformat js2-refactor multiple-cursors js2-mode js-doc intero ibuffer-projectile htmlize hlint-refactor hindent haskell-snippets gnuplot gitignore-mode gitconfig-mode gitattributes-mode git-timemachine git-messenger git-link git-gutter-fringe+ git-gutter-fringe fringe-helper git-gutter+ git-gutter gh-md fuzzy flyspell-correct-ivy flyspell-correct flycheck-pos-tip flycheck-haskell flycheck fasd evil-magit magit magit-popup git-commit with-editor engine-mode diff-hl company-tern dash-functional tern company-statistics company-restclient restclient know-your-http-well company-quickhelp pos-tip company-nixos-options nixos-options company-ghci company-ghc ghc haskell-mode company-cabal company coffee-mode cmm-mode auto-yasnippet yasnippet auto-dictionary ac-ispell auto-complete ws-butler winum which-key wgrep volatile-highlights vi-tilde-fringe uuidgen use-package toc-org spaceline powerline smex restart-emacs request rainbow-delimiters popwin persp-mode pcre2el paradox spinner org-plus-contrib org-bullets open-junk-file neotree move-text macrostep lorem-ipsum linum-relative link-hint ivy-hydra info+ indent-guide hydra hungry-delete hl-todo highlight-parentheses highlight-numbers parent-mode highlight-indentation hide-comnt help-fns+ helm-make helm helm-core google-translate golden-ratio flx-ido flx fill-column-indicator fancy-battery eyebrowse expand-region exec-path-from-shell evil-visualstar evil-visual-mark-mode evil-unimpaired evil-tutor evil-surround evil-search-highlight-persist evil-numbers evil-nerd-commenter evil-mc evil-matchit evil-lisp-state smartparens evil-indent-plus evil-iedit-state iedit evil-exchange evil-escape evil-ediff evil-args evil-anzu anzu evil goto-chg undo-tree eval-sexp-fu highlight elisp-slime-nav dumb-jump popup f dash s diminish define-word counsel-projectile projectile pkg-info epl counsel swiper ivy column-enforce-mode clean-aindent-mode bind-map bind-key auto-highlight-symbol auto-compile packed async aggressive-indent adaptive-wrap ace-window ace-link avy)))
+ '(safe-local-variable-values (quote ((projectile-project-compilation-cmd . "make")))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
