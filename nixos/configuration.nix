@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./dropbox.nix
     ];
 
   nixpkgs.config.allowUnfree = true;
@@ -27,16 +28,11 @@
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
-  networking.firewall.allowedTCPPorts = [ 3000 3001 3002 3003 3004 3005 3006 3007 3008 3009 3389 4444 9200 9300 5000 5001 5601 8000 8888 ];
-  networking.interfaces = [
-    {
-      ipAddress = "192.168.99.10";
-      name = "eno1";
-      prefixLength = 24;
-    }
-  ];
+  networking.extraHosts = "52.211.43.113";
+  networking.firewall.allowedTCPPorts = [ 3000 3001 3002 3003 3004 3005 3006 3007 3008 3009 3389 4444 9200 9300 5000 5001 5601 5900 5901 5902 5903 5904 8000 8888 9000 9229 ];
+  networking.interfaces.eno1.ipv4.addresses = [ { address = "192.168.99.10"; prefixLength = 24; }];
   networking.hosts = {
-    "127.0.0.1" = ["localhost" "local-dev.moixa-data.com" "maslow-ui.local-dev.moixa-data.com"];
+    "127.0.0.1" = ["localhost"];
     "192.168.99.20" = ["mac"];
   };
 
@@ -48,17 +44,19 @@
   # };
 
   # Set your time zone.
-  time.timeZone = "Europe/London";
+  time.timeZone = "UTC";
 
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
   environment.pathsToLink = [ "/include" ];
   environment.systemPackages = with pkgs; [
     wget
-    git
+    tk
+    gitAndTools.gitFull
     openssl
     tmux
     xclip
+    xsel
 
     unzip
 
@@ -110,16 +108,14 @@
     haskellPackages.apply-refact
     haskellPackages.hlint
     haskellPackages.stylish-haskell
-    haskellPackages.hasktags
+   # haskellPackages.hasktags
     haskellPackages.hoogle
-    haskellPackages.intero
+    # haskellPackages.intero
     haskellPackages.hindent
-    haskellPackages.ghc-mod
+    # haskellPackages.ghc-mod
 
     haskellPackages.ghcid
 
-    # Other
-    steam
   ];
 
   hardware.opengl = {
@@ -145,7 +141,7 @@
   services.openssh.forwardX11 = true;
   services.emacs.enable = true;
   services.xrdp.enable = true;
-  services.xrdp.defaultWindowManager = "exec ${pkgs.plasma5.startkde}";
+  # services.xrdp.defaultWindowManager = "exec ${pkgs.plasma5.startkde}";
   virtualisation.docker.enable = true;
 
   # Open ports in the firewall.
@@ -197,5 +193,5 @@
   # compatible, in order to avoid breaking some software such as database
   # servers. You should change this only after NixOS release notes say you
   # should.
-  system.stateVersion = "17.09"; # Did you read the comment?
+  system.stateVersion = "19.03"; # Did you read the comment?
 }
