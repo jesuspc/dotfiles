@@ -103,9 +103,13 @@ source $HOME/.aliases
 
 export TERM=xterm-256color
 
-export PATH=$PATH:/home/jesuspc/.local/bin
+export PATH=/home/jesuspc/.local/bin:$PATH
 export PATH=$PATH:/home/jesuspc/.yarn/bin
 export PATH=$PATH:/home/jesuspc/mutable_node_modules/bin
+export PATH=./node_modules/.bin:$PATH
+export PATH=./node_modules/.bin:$PATH
+export PATH=/home/jesuspc/.cargo/bin:$PATH
+export PATH=/home/jesuspc/.gem/ruby/2.4.0/bin:$PATH
 
 export EDITOR=vim
 
@@ -119,3 +123,25 @@ export EDITOR=vim
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+eval "$(fasd --init auto)"
+
+alias v='f -e vim'
+alias e='a -e "emacsclient -nw"'
+
+if [ -n "${commands[fzf-share]}" ]; then
+  source "$(fzf-share)/key-bindings.zsh"
+fi
+
+export FZF_DEFAULT_OPS="--extended"
+export FZF_DEFAULT_COMMAND="fd --type f"
+export FZF_CTRL_T_COMMAND="${FZF_DEFAULT_COMMAND}"
+
+export RUST_SRC_PATH=/home/jesuspc/Code/misc/rust/src
+eval "$(direnv hook zsh)"
+
+# tabtab source for slss package
+# uninstall by removing these lines or running `tabtab uninstall slss`
+[[ -f /home/jesuspc/mutable_node_modules/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh ]] && . /home/jesuspc/mutable_node_modules/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh
+
+

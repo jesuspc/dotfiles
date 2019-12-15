@@ -28,11 +28,11 @@
   # networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   networking.networkmanager.enable = true;
-  networking.extraHosts = "52.211.43.113";
-  networking.firewall.allowedTCPPorts = [ 3000 3001 3002 3003 3004 3005 3006 3007 3008 3009 3389 4444 9200 9300 5000 5001 5601 5900 5901 5902 5903 5904 8000 8888 9000 9229 ];
+  networking.extraHosts = "52.211.43.113 gridshare.moixa-data.com";
+  networking.firewall.allowedTCPPorts = [ 3000 3001 3002 3003 3004 3005 3006 3007 3008 3009 3389 4444 9200 9300 5000 5001 5601 5900 5901 5902 5903 5904 8000 8888 9000 9229 19000 19001 19002 19003 ];
   networking.interfaces.eno1.ipv4.addresses = [ { address = "192.168.99.10"; prefixLength = 24; }];
   networking.hosts = {
-    "127.0.0.1" = ["localhost"];
+    "127.0.0.1" = ["localhost" "local-dev.moixa-data.com" "maslow-ui.local-dev.moixa-data.com"];
     "192.168.99.20" = ["mac"];
   };
 
@@ -78,6 +78,7 @@
     google-chrome
     chromium
 
+    bash
     oh-my-zsh
     terminator
 
@@ -99,11 +100,13 @@
     bundler
     rake
     # JS
-    nodejs-8_x
+    nodejs-12_x
     python36
 
     vim
-    emacs
+    ((emacsPackagesNgGen emacs).emacsWithPackages (epkgs: [
+	epkgs.emacs-libvterm
+    ]))
     # Emacs haskell mode dependencies
     haskellPackages.apply-refact
     haskellPackages.hlint
