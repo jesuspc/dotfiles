@@ -8,3 +8,6 @@
 
 (package! evil-terminal-cursor-changer)
 ;; (package! company-tabnine)
+;;
+(package! ts
+  :recipe (:host github :repo "alphapapa/ts.el" :branch "master" :files ("*.el")))

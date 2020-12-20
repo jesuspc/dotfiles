@@ -24,10 +24,19 @@
 
 (setq company-idle-delay 0.5)
 
-(xclip-mode t)
+;; (xclip-mode t)
 
 (after! lsp-ui
  (setq lsp-ui-sideline-enable nil))
+
+;; (custom-set-faces!
+;;   '(flycheck-error :underline (:color "red2" :style wave)))
+
+(custom-set-faces!
+  '(flycheck-error :underline (:color "red2")))
+
+(setq-hook! 'typescript-mode-hook +format-with-lsp nil)
+(setq-hook! 'typescript-tsx-mode-hook +format-with-lsp nil)
 
 ;; (use-package! company-tabnine
 ;;   :after company
@@ -48,4 +57,3 @@
 ;;   (advice-add #'company-tabnine :around #'my-company-tabnine)
 ;;   (cl-pushnew 'company-tabnine (default-value 'company-backends))
 ;; )
-
