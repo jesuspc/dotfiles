@@ -1,0 +1,4 @@
+# Git
+alias gco='git checkout'
+alias glr='git pull --rebase origin'
+alias gp='git push origin'

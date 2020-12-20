@@ -2,7 +2,7 @@
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
 # Path to your oh-my-zsh installation.
-export ZSH=/nix/store/xs1a6rwb62xirbxj2zisrzzm7p391slf-oh-my-zsh-2017-09-24/share/oh-my-zsh
+# export ZSH=/nix/store/xs1a6rwb62xirbxj2zisrzzm7p391slf-oh-my-zsh-2017-09-24/share/oh-my-zsh
 
 # Set name of the theme to load. Optionally, if you set this to "random"
 # it'll load a random theme each time that oh-my-zsh is loaded.
@@ -126,9 +126,6 @@ export NVM_DIR="$HOME/.nvm"
 
 eval "$(fasd --init auto)"
 
-alias v='f -e vim'
-alias e='a -e "emacsclient -nw"'
-
 if [ -n "${commands[fzf-share]}" ]; then
   source "$(fzf-share)/key-bindings.zsh"
 fi
@@ -144,4 +141,26 @@ eval "$(direnv hook zsh)"
 # uninstall by removing these lines or running `tabtab uninstall slss`
 [[ -f /home/jesuspc/mutable_node_modules/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh ]] && . /home/jesuspc/mutable_node_modules/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh
 
-
+# # short ww = work work
+# ww-logs() {
+#   log=$(awslogs groups | fzf)
+#   echo "${log}"
+#   while true; do
+#     seq 2
+#     awslogs get "${@:--w}" "${log}"
+#     echo -n "Again ${log}? "
+#     read -r
+#   done
+# }
+# logs-prod() {
+#   (
+#     export AWS_PROFILE=moixa-prod
+#     ww-logs
+#   )
+# }
+# logs-dev() {
+#   (
+#     export AWS_PROFILE=moixa-dev
+#     ww-logs
+#   )
+# }
